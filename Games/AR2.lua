@@ -9,9 +9,17 @@ local Lighting = game:GetService("Lighting")
 local LocalPlayer = PlayerService.LocalPlayer
 local Aimbot,SilentAim,Trigger = false,nil,nil
 
+do local SetIdentity = syn and syn.set_thread_identity or setidentity
+local OldPluginManager,Message -- Thanks to Kiriot22
+task.spawn(function() SetIdentity(2)
+    local Success,Error = pcall(getrenv().PluginManager)
+    Message = Error
+end)
+OldPluginManager = hookfunction(getrenv().PluginManager, function()
+    return error(Message)
+end) end
+
 local Framework = require(ReplicatedFirst.Framework) Framework:WaitForLoaded()
-repeat task.wait() until Framework.Classes.Players.get()
-local PlayerClass = Framework.Classes.Players.get()
 local Interface = Framework.Libraries.Interface
 local Animators = Framework.Classes.Animators
 local Network = Framework.Libraries.Network
@@ -26,21 +34,24 @@ local Randoms = Workspace.Map.Shared.Randoms
 local Vehicles = Workspace.Vehicles.Spawned
 local Zombies = Workspace.Zombies.Mobs
 local Loot = Workspace.Loot
-
-local Places,ItemCategory,ItemMemory = {
-    "ATVCrashsiteRenegade01","CampSovietBandit01","CrashPrisonBus01",
-    "LifePreserverMilitary01","LifePreserverSoviet01","LifePreserverSpecOps01",
-    "MilitaryBlockade01","MilitaryConvoy01","PartyTrailerDisco01",
-    "PartyTrailerTechnoGold","PartyTrailerTechnoGoldDeagleMod1",
-    "PirateTreasure01","SeahawkCrashsite04","SeahawkCrashsite05",
-    "SeahawkCrashsite06","SeahawkCrashsite07","SpecialForcesCrash01"
+local Places,ItemCategory = {
+    "PartyTrailerTechnoGold","MilitaryConvoy01","SpecialForcesCrash01",
+    --"StashWeaponMid01","StashWeaponMid02","StashWeaponMid03",
+    --"StashWeaponHigh01","StashWeaponHigh02","StashWeaponHigh03",
+    "SeahawkCrashsite01","SeahawkCrashsite02","SeahawkCrashsite03",
+    "SeahawkCrashsite04","SeahawkCrashsite05","SeahawkCrashsite06",
+    "SeahawkCrashsite07","SeahawkCrashsite08","SeahawkCrashsite09",
+    --"RandomCrashCessna01","RandomCrashCessna02","RandomCrashCessna03",
+    "ATVCrashsiteRenegade01","ATVCrashsiteRenegade02","ATVCrashsiteRenegade03",
+    "LifePreserverMilitary01","LifePreserverSpecOps01","PirateTreasure01"
 },{
     "Containers","RandomPlaces",
     "Accessories","Ammo","Attachments","Backpacks","Belts","Clothing","Consumables",
     "Firearms","Hats","Medical","Melees","Utility","VehicleParts","Vests"
-},{}
+}
 
---[[local Blacklist = {
+--[[
+local Blacklist = {
     "Ping Return",
     "Animator Camera Position Report",
     "Get Server Debug State",
@@ -49,21 +60,22 @@ local Places,ItemCategory,ItemMemory = {
     "Get Character Stat"
 }
 
-local OldSend,OldFetch = Network.Send,Network.Fetch
-Network.Send = function(Self,...)
+local OldSend,OldFetch
+OldSend = hookfunction(Network.Send,function(Self,...)
     local Args = {...}
     if not table.find(Blacklist,Args[1]) then
         print("Send",repr(Args))
     end return OldSend(Self,...)
-end
-Network.Fetch = function(Self,...)
+end)
+OldFetch = hookfunction(Network.Fetch,function(Self,...)
     local Args = {...}
     if not table.find(Blacklist,Args[1]) then
         local Return = OldFetch(Self,...)
         print("Fetch:",repr(Args),"Returned:",repr(Return))
         return Return
     end return OldFetch(Self,...)
-end]]
+end)
+]]
 
 local Window = Parvus.Utilities.UI:Window({
     Name = "Parvus Hub — "..Parvus.Game,
@@ -254,13 +266,12 @@ local Window = Parvus.Utilities.UI:Window({
             RecoilSection:Slider({Name = "KickUp Force",Flag = "AR2/Recoil/KickUpForce",Min = 0,Max = 100,Value = 0,Unit = "%"})
         end
         local MiscSection = MiscTab:Section({Name = "Misc",Side = "Right"}) do
-            MiscSection:Toggle({Name = "No Fall Impact",Flag = "AR2/NoFallImpact",Value = false})
-            MiscSection:Toggle({Name = "No Jump Delay",Flag = "AR2/NoJumpDelay",Value = false})
-            MiscSection:Toggle({Name = "Always Run",Flag = "AR2/AlwaysRun",Value = false})
-            MiscSection:Toggle({Name = "Spoof SCS",Flag = "AR2/SSCS",Value = false})
-            :ToolTip("SCS - Set Character State:\nNo Fall Damage\nLess Hunger / Thirst\nWhile Sprinting")
             MiscSection:Toggle({Name = "Map ESP",Flag = "AR2/MapESP",Value = false,Callback = function(Bool)
-                if Bool then Interface:Get("Map"):EnableGodview() else Interface:Get("Map"):DisableGodview() end
+                if Bool then
+                    Interface:Get("Map"):EnableGodview()
+                else
+                    Interface:Get("Map"):DisableGodview()
+                end
             end})
         end
     end
@@ -364,26 +375,6 @@ RaycastParams.FilterDescendantsInstances = {
     Workspace.Spawns
 } RaycastParams.IgnoreWater = true
 
-local function FixUnit(Vector)
-	if Vector.Magnitude == 0 then
-	return Vector3.zero end
-	return Vector.Unit
-end
-local function FlatCameraVector()
-    local Camera = Workspace.CurrentCamera
-	return Camera.CFrame.LookVector * Vector3.new(1,0,1),
-		Camera.CFrame.RightVector * Vector3.new(1,0,1)
-end
-local function InputToVelocity() local Velocities,LookVector,RightVector = {},FlatCameraVector()
-	Velocities[1] = UserInputService:IsKeyDown(Enum.KeyCode.W) and LookVector or Vector3.zero
-	Velocities[2] = UserInputService:IsKeyDown(Enum.KeyCode.S) and -LookVector or Vector3.zero
-	Velocities[3] = UserInputService:IsKeyDown(Enum.KeyCode.A) and -RightVector or Vector3.zero
-	Velocities[4] = UserInputService:IsKeyDown(Enum.KeyCode.D) and RightVector or Vector3.zero
-    --Velocities[5] = UserInputService:IsKeyDown(Enum.KeyCode.Space) and Vector3.new(0,1,0) or Vector3.zero
-    --Velocities[6] = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) and Vector3.new(0,-1,0) or Vector3.zero
-	return FixUnit(Velocities[1] + Velocities[2] + Velocities[3] + Velocities[4])
-end
-
 local function Raycast(Origin,Direction)
     local RaycastResult = Workspace:Raycast(Origin,Direction,RaycastParams)
     if RaycastResult then
@@ -404,11 +395,6 @@ local function Raycast(Origin,Direction)
 			return true
 		end return false
     end return false
-end
-
-local function GetDistanceFromCamera(Position)
-    local Camera = Workspace.CurrentCamera
-    return (Position - Camera.CFrame.Position).Magnitude
 end
 
 local function TeamCheck(Enabled,Player)
@@ -438,7 +424,7 @@ local function GetHitbox(Config)
         if Player ~= LocalPlayer and IsAlive and TeamCheck(Config.TeamCheck,Player) then
             for Index, HumanoidPart in pairs(Config.Priority) do
                 local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
-                local Distance = GetDistanceFromCamera(Hitbox.Position)
+                local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
                 if Hitbox and Distance * 0.28 <= Config.Distance then
                     local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Hitbox.Position)
                     local Magnitude = (Vector2.new(ScreenPosition.X, ScreenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
@@ -468,7 +454,7 @@ local function GetHitboxWithPrediction(Config)
         if Player ~= LocalPlayer and IsAlive and TeamCheck(Config.TeamCheck,Player) then
             for Index, HumanoidPart in pairs(Config.Priority) do
                 local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
-                local Distance = GetDistanceFromCamera(Hitbox.Position)
+                local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
                 if Hitbox and Distance * 0.28 <= Config.Distance then
                     local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * Distance) / Config.Prediction.Velocity
                     local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Config.Prediction.Enabled
@@ -485,23 +471,19 @@ local function GetHitboxWithPrediction(Config)
 
     return ClosestHitbox
 end
-local function GetItemsAllFOV(Config)
+local function GetItemAllFOV(Config)
     local Camera = Workspace.CurrentCamera
-    local ClosestItems = {}
+    local Distance,ClosestItem = Config.Distance,nil
 
     for Index, Item in pairs(LootBins:GetChildren()) do
         for Index, Group in pairs(Item:GetChildren()) do
-            local Part = Group:FindFirstChild("Part")
-            if not Part then continue end
-
-            local Magnitude = GetDistanceFromCamera(Part.Position)
-            if Magnitude <= Config.Distance then
-                ClosestItems[#ClosestItems + 1] = Group
+            local Part = Group:FindFirstChild("Part") if not Part then continue end
+            local Magnitude = (Part.Position - Camera.CFrame.Position).Magnitude
+            if Magnitude < Distance  then
+                Distance,ClosestItem = Magnitude,Group
             end
         end
-    end
-
-    return ClosestItems
+    end return ClosestItem
 end
 local function CTS(Data)
     local String = Data.Name .. "\n"
@@ -523,7 +505,7 @@ local function AimAt(Hitbox,Config)
     local Camera = Workspace.CurrentCamera
     local Mouse = UserInputService:GetMouseLocation()
 
-    local HitboxDistance = GetDistanceFromCamera(Hitbox.Position)
+    local HitboxDistance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
     local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * HitboxDistance) / Config.Prediction.Velocity
 
     local HitboxOnScreen = Camera:WorldToViewportPoint(Config.Prediction.Enabled
@@ -550,19 +532,6 @@ OldNamecall = hookmetamethod(game,"__namecall",function(Self,...)
     return OldNamecall(Self,...)
 end)]]
 
-local OldSend = Network.Send
-Network.Send = function(Self,Name,...)
-    local Args = {...}
-    if Window.Flags["AR2/SSCS"] then
-        if Name == "Set Character State" then
-            for Index,Arg in pairs(Args[1]) do
-                Arg[1] = "Walking"
-            end
-        end
-    end
-    return OldSend(Self,Name,...)
-end
-
 local OldPost = Animators.Post
 Animators.Post = function(Self,...) local Args = {...}
     if Args[1] == "FireImpulse" then
@@ -576,23 +545,6 @@ Animators.Post = function(Self,...) local Args = {...}
     end
     return OldPost(Self,unpack(Args))
 end
-local OldPlayAnimationReplicated = Animators.PlayAnimationReplicated
-Animators.PlayAnimationReplicated = function(Self,Path,...)
-    if Path == "Actions.Fall Impact"
-    and Window.Flags["AR2/NoFallImpact"] then return end
-    return OldPlayAnimationReplicated(Self,Path,...)
-end
-
-PlayerClass.CharacterAdded:Connect(function(Character)
-    Character.MoveStateChanged:Connect(function(Old,New)
-        if Window.Flags["AR2/AlwaysRun"] then
-            Character.RunningInput = true
-        end
-        if Window.Flags["AR2/NoJumpDelay"] then
-            Character.JumpDebounce = 0
-        end
-    end)
-end)
 
 RunService.Heartbeat:Connect(function()
     --[[SilentAim = GetHitbox({
@@ -621,12 +573,6 @@ RunService.Heartbeat:Connect(function()
             Sensitivity = Window.Flags["Aimbot/Smoothness"] / 100
         })
     end
-    --[[if PlayerClass.Character and Window.Flags["AR2/WalkSpeed/Enabled"] then
-        --print(PlayerClass.Character.Humanoid.WalkSpeed)
-        --PlayerClass.Character.RootPart.AssemblyLinearVelocity
-        --= InputToVelocity() * Window.Flags["AR2/WalkSpeed"]
-        PlayerClass.Character.MoveSpeedSpring:SetGoal(Window.Flags["AR2/WalkSpeed"])
-    end]]
 end)
 Parvus.Utilities.Misc:NewThreadLoop(0,function()
     if not Trigger then return end
@@ -665,28 +611,19 @@ Parvus.Utilities.Misc:NewThreadLoop(0,function()
         end mouse1release()
     end
 end)
-
-Parvus.Utilities.Misc:NewThreadLoop(1,function()
+Parvus.Utilities.Misc:NewThreadLoop(2.5,function()
     if not Window.Flags["AR2/Item/Containers/Enabled"] then return end
-    local Items = GetItemsAllFOV({Distance = 100})
-
-    if #Items > 0 and LocalPlayer.Character and not Interface:IsVisible("GameMenu") then
-        for Index,Item in pairs(Items) do
-            if not Interface:IsVisible("GameMenu") and not ItemMemory[Item] then
-                local ContainerAvailable = Network:Fetch("Inventory Container Group Connect",Item)
-                if ContainerAvailable and not Interface:IsVisible("GameMenu") then
-                    Network:Send("Inventory Container Group Disconnect") ItemMemory[Item] = true
-                    task.spawn(function() task.wait(120) ItemMemory[Item] = false end)
-                end
-            end
-        end
+    local Item = GetItemAllFOV({Distance = 90})
+    if Item and LocalPlayer.Character and not Interface:IsVisible("GameMenu") then
+        local ContainerAvailable = Network:Fetch("Inventory Container Group Connect", Item)
+        if ContainerAvailable then Network:Send("Inventory Container Group Disconnect") end
     end
 end)
 
 for Index,Place in pairs(Randoms:GetChildren()) do
     if table.find(Places,Place.Name) then --print(Place.Name)
         Parvus.Utilities.Drawing:ItemESP(
-            {Place,Place.Name,Place.Value.Position},
+            {Place,Place.Name,Place.PrimaryPart.Position},
             "AR2/Item","AR2/Item/RandomPlaces",Window.Flags
         )
     end
@@ -703,14 +640,15 @@ end
 
 Randoms.ChildAdded:Connect(function(Place)
     if table.find(Places,Place.Name) then --print(Place.Name)
+        repeat task.wait() until Place.PrimaryPart
         Parvus.Utilities.Drawing:ItemESP(
-            {Place,Place.Name,Place.Value.Position},
+            {Place,Place.Name,Place.PrimaryPart.Position},
             "AR2/Item","AR2/Item/RandomPlaces",Window.Flags
         )
         if Window.Flags["AR2/Item/RandomPlaces/Enabled"] then
-            Parvus.Utilities.UI:Notification2({
-                Title = string.format("%s spawned (~%i meters away)",Place.Name,
-                GetDistanceFromCamera(Place.Value.Position) * 0.28),Duration = 20
+            Parvus.Utilities.UI:Notification({
+                Title = "New Random Place Spawned!",
+                Description = "Look around you should see it\nIf not, change ESP Distance\n(" .. Place.Name .. ")"
             })
         end
     end
