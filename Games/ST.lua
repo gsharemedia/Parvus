@@ -1,14 +1,9 @@
 local UserInputService = game:GetService("UserInputService")
-local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local PlayerService = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
-local Lighting = game:GetService("Lighting")
-local Stats = game:GetService("Stats")
 
 local LocalPlayer = PlayerService.LocalPlayer
-local Ping = Stats.Network.ServerStatsItem["Data Ping"]
-local Aimbot,SilentAim = false,nil
 
 local Window = Parvus.Utilities.UI:Window({
     Name = "Parvus Hub — "..Parvus.Game,
@@ -16,29 +11,22 @@ local Window = Parvus.Utilities.UI:Window({
     Size = UDim2.new(0,496,0,496)
     }) do Window:Watermark({Enabled = true})
 
-    local GameTab = Window:Tab({Name = Parvus.Game}) do
-        local FlySection = GameTab:Section({Name = "Fly",Side = "Right"}) do
-            FlySection:Toggle({Name = "Enabled",Flag = "ST/Fly/Enabled",Value = false})
-            :Keybind({Flag = "ST/Fly/Keybind"})
-            FlySection:Toggle({Name = "Attach To Camera",Flag = "ST/Fly/Camera",Value = true})
-            FlySection:Slider({Name = "Speed",Flag = "ST/Fly/Speed",Min = 10,Max = 500,Value = 100})
-        end
-    end
     local VisualsTab = Window:Tab({Name = "Visuals"}) do
         local GlobalSection = VisualsTab:Section({Name = "Global",Side = "Left"}) do
             GlobalSection:Colorpicker({Name = "Ally Color",Flag = "ESP/Player/Ally",Value = {0.33333334326744,0.75,1,0,false}})
             GlobalSection:Colorpicker({Name = "Enemy Color",Flag = "ESP/Player/Enemy",Value = {1,0.75,1,0,false}})
             GlobalSection:Toggle({Name = "Team Check",Flag = "ESP/Player/TeamCheck",Value = false})
             GlobalSection:Toggle({Name = "Use Team Color",Flag = "ESP/Player/TeamColor",Value = false})
+            GlobalSection:Slider({Name = "Distance",Flag = "ESP/Player/Distance",Min = 25,Max = 1000,Value = 250,Unit = "meters"})
         end
         local BoxSection = VisualsTab:Section({Name = "Boxes",Side = "Left"}) do
-            BoxSection:Toggle({Name = "Enabled",Flag = "ESP/Player/Box/Enabled",Value = false})
+            BoxSection:Toggle({Name = "Box Enabled",Flag = "ESP/Player/Box/Enabled",Value = false})
             BoxSection:Toggle({Name = "Filled",Flag = "ESP/Player/Box/Filled",Value = false})
             BoxSection:Toggle({Name = "Outline",Flag = "ESP/Player/Box/Outline",Value = true})
             BoxSection:Slider({Name = "Thickness",Flag = "ESP/Player/Box/Thickness",Min = 1,Max = 10,Value = 1})
             BoxSection:Slider({Name = "Transparency",Flag = "ESP/Player/Box/Transparency",Min = 0,Max = 1,Precise = 2,Value = 0})
-            BoxSection:Divider({Text = "Text / Info"})
-            BoxSection:Toggle({Name = "Enabled",Flag = "ESP/Player/Text/Enabled",Value = false})
+            BoxSection:Divider()
+            BoxSection:Toggle({Name = "Text Enabled",Flag = "ESP/Player/Text/Enabled",Value = false})
             BoxSection:Toggle({Name = "Outline",Flag = "ESP/Player/Text/Outline",Value = true})
             BoxSection:Toggle({Name = "Autoscale",Flag = "ESP/Player/Text/Autoscale",Value = true})
             BoxSection:Dropdown({Name = "Font",Flag = "ESP/Player/Text/Font",List = {
@@ -50,7 +38,7 @@ local Window = Parvus.Utilities.UI:Window({
             BoxSection:Slider({Name = "Size",Flag = "ESP/Player/Text/Size",Min = 13,Max = 100,Value = 16})
             BoxSection:Slider({Name = "Transparency",Flag = "ESP/Player/Text/Transparency",Min = 0,Max = 1,Precise = 2,Value = 0})
         end
-        local OoVSection = VisualsTab:Section({Name = "Offscreen Arrows",Side = "Left"}) do
+        local OoVSection = VisualsTab:Section({Name = "Offscreen Arrows",Side = "Right"}) do
             OoVSection:Toggle({Name = "Enabled",Flag = "ESP/Player/Arrow/Enabled",Value = false})
             OoVSection:Toggle({Name = "Filled",Flag = "ESP/Player/Arrow/Filled",Value = true})
             OoVSection:Slider({Name = "Width",Flag = "ESP/Player/Arrow/Width",Min = 14,Max = 28,Value = 18})
@@ -63,6 +51,14 @@ local Window = Parvus.Utilities.UI:Window({
             HighlightSection:Toggle({Name = "Enabled",Flag = "ESP/Player/Highlight/Enabled",Value = false})
             HighlightSection:Slider({Name = "Transparency",Flag = "ESP/Player/Highlight/Transparency",Min = 0,Max = 1,Precise = 2,Value = 0})
             HighlightSection:Colorpicker({Name = "Outline Color",Flag = "ESP/Player/Highlight/OutlineColor",Value = {1,1,0,0.5,false}})
+        end
+    end
+    local MiscTab = Window:Tab({Name = "Miscellaneous"}) do
+        local FlySection = MiscTab:Section({Name = "Fly",Side = "Right"}) do
+            FlySection:Toggle({Name = "Enabled",Flag = "ST/Fly/Enabled",Value = false})
+            :Keybind({Flag = "ST/Fly/Keybind"})
+            FlySection:Toggle({Name = "Attach To Camera",Flag = "ST/Fly/Camera",Value = true})
+            FlySection:Slider({Name = "Speed",Flag = "ST/Fly/Speed",Min = 10,Max = 500,Value = 100})
         end
     end
     local SettingsTab = Window:Tab({Name = "Settings"}) do
@@ -149,13 +145,27 @@ Window:SetValue("UI/Toggle",
 Window.Flags["UI/OOL"])
 
 Parvus.Utilities.Misc:SetupWatermark(Window)
---Parvus.Utilities.Misc:SetupLighting(Window.Flags)
 Parvus.Utilities.Drawing:SetupCursor(Window.Flags)
 
 local MaxVector = Vector3.new(math.huge,math.huge,math.huge)
 local BodyVelocity = Instance.new("BodyVelocity")
 local BodyGyro = Instance.new("BodyGyro")
 BodyGyro.P = 50000
+
+local OldNamecall
+OldNamecall = hookmetamethod(game, "__namecall", function(Self, ...)
+    local Method,Args = getnamecallmethod(),{...}
+    if Method == "FireServer" then
+        if Self.Name == "XEvent" then
+            return
+        end
+    elseif Method == "addItem" then
+        if Args[1] == BodyGyro or Args[1] == BodyVelocity then
+            return
+        end
+    end
+    return OldNamecall(Self, ...)
+end)
 
 local function GetPlayerTank(Player)
     local Char = Player:WaitForChild("Char")
@@ -213,9 +223,8 @@ RunService.Heartbeat:Connect(function()
 end)
 
 for Index,Player in pairs(PlayerService:GetPlayers()) do
-    if Player ~= LocalPlayer then
-        Parvus.Utilities.Drawing:AddESP(Player,"Player","ESP/Player",Window.Flags)
-    end
+    if Player == LocalPlayer then continue end
+    Parvus.Utilities.Drawing:AddESP(Player,"Player","ESP/Player",Window.Flags)
 end
 PlayerService.PlayerAdded:Connect(function(Player)
     Parvus.Utilities.Drawing:AddESP(Player,"Player","ESP/Player",Window.Flags)
