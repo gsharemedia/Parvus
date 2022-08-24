@@ -412,37 +412,41 @@ RunService.Heartbeat:Connect(function()
 end)
 Parvus.Utilities.Misc:NewThreadLoop(0,function()
     if not Trigger then return end
-    local TriggerHB = GetHitboxWithPrediction({
+    local TriggerHitbox = GetHitboxWithPrediction({
         Enabled = Window.Flags["Trigger/Enabled"],
         WallCheck = Window.Flags["Trigger/WallCheck"],
-        Prediction = {
-            Enabled = Window.Flags["Trigger/Prediction/Enabled"],
-            Velocity = Window.Flags["Trigger/Prediction/Velocity"]
-        },
+        DistanceCheck = Window.Flags["Trigger/DistanceCheck"],
         DynamicFOV = Window.Flags["Trigger/DynamicFOV"],
         FieldOfView = Window.Flags["Trigger/FieldOfView"],
         Distance = Window.Flags["Trigger/Distance"],
-        Priority = Window.Flags["Trigger/Priority"],
-        TeamCheck = Window.Flags["TeamCheck"]
+        BodyParts = Window.Flags["Trigger/BodyParts"],
+        TeamCheck = Window.Flags["TeamCheck"],
+
+        Prediction = {
+            Enabled = Window.Flags["Trigger/Prediction/Enabled"],
+            Velocity = Window.Flags["Trigger/Prediction/Velocity"]
+        }
     })
 
-    if TriggerHB then mouse1press()
+    if TriggerHitbox then mouse1press()
         task.wait(Window.Flags["Trigger/Delay"])
         if Window.Flags["Trigger/HoldMode"] then
             while task.wait() do
-                TriggerHB = GetHitboxWithPrediction({
+                TriggerHitbox = GetHitboxWithPrediction({
                     Enabled = Window.Flags["Trigger/Enabled"],
                     WallCheck = Window.Flags["Trigger/WallCheck"],
-                    Prediction = {
-                        Enabled = Window.Flags["Trigger/Prediction/Enabled"],
-                        Velocity = Window.Flags["Trigger/Prediction/Velocity"]
-                    },
+                    DistanceCheck = Window.Flags["Trigger/DistanceCheck"],
                     DynamicFOV = Window.Flags["Trigger/DynamicFOV"],
                     FieldOfView = Window.Flags["Trigger/FieldOfView"],
                     Distance = Window.Flags["Trigger/Distance"],
-                    Priority = Window.Flags["Trigger/Priority"],
-                    TeamCheck = Window.Flags["TeamCheck"]
-                }) if not TriggerHB or not Trigger then break end
+                    BodyParts = Window.Flags["Trigger/BodyParts"],
+                    TeamCheck = Window.Flags["TeamCheck"],
+                    
+                    Prediction = {
+                        Enabled = Window.Flags["Trigger/Prediction/Enabled"],
+                        Velocity = Window.Flags["Trigger/Prediction/Velocity"]
+                    }
+                }) if not TriggerHitbox or not Trigger then break end
             end
         end mouse1release()
     end
