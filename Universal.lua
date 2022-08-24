@@ -271,11 +271,6 @@ local function TeamCheck(Enabled,Player)
     return LocalPlayer.Team ~= Player.Team
 end
 
-local function DistanceCheck(Enabled,Distance,MaxDistance)
-    if not Enabled then return true end
-    return Distance * 0.28 <= MaxDistance
-end
-
 local function WallCheck(Enabled,Hitbox,Character)
     if not Enabled then return true end
     local Camera = Workspace.CurrentCamera
@@ -290,21 +285,22 @@ local function GetHitbox(Config)
     local Camera = Workspace.CurrentCamera
     
     local FieldOfView,ClosestHitbox = Config.DynamicFOV and
-    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView or Config.FieldOfView
+    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView
+    or Config.FieldOfView,nil
 
-    for Index,Player in pairs(PlayerService:GetPlayers()) do
-        local Character = Player.Character if not Character then continue end
-        local Humanoid = Character:FindFirstChildOfClass("Humanoid") if not Humanoid then continue end
-        if Player ~= LocalPlayer and Humanoid.Health > 0 and TeamCheck(Config.TeamCheck,Player) then
-            for Index,BodyPart in pairs(Config.BodyParts) do
-                local Hitbox = Character:FindFirstChild(BodyPart) if not Hitbox then continue end
+    for Index, Player in pairs(PlayerService:GetPlayers()) do
+        local Character = Player.Character
+        local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+        local IsAlive = Humanoid and Humanoid.Health > 0
+        if Player ~= LocalPlayer and IsAlive and TeamCheck(Config.TeamCheck,Player) then
+            for Index, HumanoidPart in pairs(Config.Priority) do
+                local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
                 local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-                if WallCheck(Config.WallCheck,Hitbox,Character)
-                and DistanceCheck(Config.DistanceCheck,Distance,Config.Distance) then
-                    local ScreenPosition,OnScreen = Camera:WorldToViewportPoint(Hitbox.Position)
+                if Hitbox and Distance * 0.28 <= Config.Distance then
+                    local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Hitbox.Position)
                     local Magnitude = (Vector2.new(ScreenPosition.X, ScreenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
-                    if OnScreen and Magnitude < FieldOfView then
-                        FieldOfView,ClosestHitbox = Magnitude,{Player,Character,Hitbox,Distance,ScreenPosition}
+                    if OnScreen and Magnitude < FieldOfView and WallCheck(Config.WallCheck,Hitbox,Character) then
+                        FieldOfView,ClosestHitbox = Magnitude,Hitbox
                     end
                 end
             end
@@ -319,25 +315,25 @@ local function GetHitboxWithPrediction(Config)
     local Camera = Workspace.CurrentCamera
 
     local FieldOfView,ClosestHitbox = Config.DynamicFOV and
-    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView or Config.FieldOfView
+    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView
+    or Config.FieldOfView,nil
 
-    for Index,Player in pairs(PlayerService:GetPlayers()) do
-        local Character = Player.Character if not Character then continue end
-        local Humanoid = Character:FindFirstChildOfClass("Humanoid") if not Humanoid then continue end
-        if Player ~= LocalPlayer and Humanoid.Health > 0 and TeamCheck(Config.TeamCheck,Player) then
-            for Index,BodyPart in pairs(Config.BodyParts) do
-                local Hitbox = Character:FindFirstChild(BodyPart) if not Hitbox then continue end
+    for Index, Player in pairs(PlayerService:GetPlayers()) do
+        local Character = Player.Character
+        local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+        local IsAlive = Humanoid and Humanoid.Health > 0
+        if Player ~= LocalPlayer and IsAlive and TeamCheck(Config.TeamCheck,Player) then
+            for Index, HumanoidPart in pairs(Config.Priority) do
+                local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
                 local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-
-                if WallCheck(Config.WallCheck,Hitbox,Character)
-                and DistanceCheck(Config.DistanceCheck,Distance,Config.Distance) then
-                    local PredictionVelocity = (Hitbox.AssemblyLinearVelocity * Distance) / Config.Prediction.Velocity
+                if Hitbox and Distance * 0.28 <= Config.Distance then
+                    local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * Distance) / Config.Prediction.Velocity
                     local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Config.Prediction.Enabled
-                    and Hitbox.Position + PredictionVelocity or Hitbox.Position)
+                    and Hitbox.Position + HitboxVelocityCorrection or Hitbox.Position)
 
                     local Magnitude = (Vector2.new(ScreenPosition.X, ScreenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
-                    if OnScreen and Magnitude < FieldOfView then
-                        FieldOfView,ClosestHitbox = Magnitude,{Player,Character,Hitbox,Distance,ScreenPosition}
+                    if OnScreen and Magnitude < FieldOfView and WallCheck(Config.WallCheck,Hitbox,Character) then
+                        FieldOfView,ClosestHitbox = Magnitude,Hitbox
                     end
                 end
             end
@@ -383,68 +379,63 @@ RunService.Heartbeat:Connect(function()
     SilentAim = GetHitbox({
         Enabled = Window.Flags["SilentAim/Enabled"],
         WallCheck = Window.Flags["SilentAim/WallCheck"],
-        DistanceCheck = Window.Flags["SilentAim/DistanceCheck"],
         DynamicFOV = Window.Flags["SilentAim/DynamicFOV"],
         FieldOfView = Window.Flags["SilentAim/FieldOfView"],
         Distance = Window.Flags["SilentAim/Distance"],
-        BodyParts = Window.Flags["SilentAim/BodyParts"],
+        Priority = Window.Flags["SilentAim/Priority"],
         TeamCheck = Window.Flags["TeamCheck"]
     })
     if Aimbot then AimAt(
         GetHitbox({
             Enabled = Window.Flags["Aimbot/Enabled"],
             WallCheck = Window.Flags["Aimbot/WallCheck"],
-            DistanceCheck = Window.Flags["Aimbot/DistanceCheck"],
             DynamicFOV = Window.Flags["Aimbot/DynamicFOV"],
             FieldOfView = Window.Flags["Aimbot/FieldOfView"],
             Distance = Window.Flags["Aimbot/Distance"],
-            BodyParts = Window.Flags["Aimbot/BodyParts"],
+            Priority = Window.Flags["Aimbot/Priority"],
             TeamCheck = Window.Flags["TeamCheck"]
         }),{
             Prediction = {
                 Enabled = Window.Flags["Aimbot/Prediction/Enabled"],
                 Velocity = Window.Flags["Aimbot/Prediction/Velocity"]
-            },Sensitivity = Window.Flags["Aimbot/Smoothness"] / 100
+            },
+            Sensitivity = Window.Flags["Aimbot/Smoothness"] / 100
         })
     end
 end)
 Parvus.Utilities.Misc:NewThreadLoop(0,function()
     if not Trigger then return end
-    local TriggerHitbox = GetHitboxWithPrediction({
+    local TriggerHB = GetHitboxWithPrediction({
         Enabled = Window.Flags["Trigger/Enabled"],
         WallCheck = Window.Flags["Trigger/WallCheck"],
-        DistanceCheck = Window.Flags["Trigger/DistanceCheck"],
-        DynamicFOV = Window.Flags["Trigger/DynamicFOV"],
-        FieldOfView = Window.Flags["Trigger/FieldOfView"],
-        Distance = Window.Flags["Trigger/Distance"],
-        BodyParts = Window.Flags["Trigger/BodyParts"],
-        TeamCheck = Window.Flags["TeamCheck"],
-
         Prediction = {
             Enabled = Window.Flags["Trigger/Prediction/Enabled"],
             Velocity = Window.Flags["Trigger/Prediction/Velocity"]
-        }
+        },
+        DynamicFOV = Window.Flags["Trigger/DynamicFOV"],
+        FieldOfView = Window.Flags["Trigger/FieldOfView"],
+        Distance = Window.Flags["Trigger/Distance"],
+        Priority = Window.Flags["Trigger/Priority"],
+        TeamCheck = Window.Flags["TeamCheck"]
     })
 
-    if TriggerHitbox then mouse1press()
+    if TriggerHB then mouse1press()
         task.wait(Window.Flags["Trigger/Delay"])
         if Window.Flags["Trigger/HoldMode"] then
             while task.wait() do
-                TriggerHitbox = GetHitboxWithPrediction({
+                TriggerHB = GetHitboxWithPrediction({
                     Enabled = Window.Flags["Trigger/Enabled"],
                     WallCheck = Window.Flags["Trigger/WallCheck"],
-                    DistanceCheck = Window.Flags["Trigger/DistanceCheck"],
-                    DynamicFOV = Window.Flags["Trigger/DynamicFOV"],
-                    FieldOfView = Window.Flags["Trigger/FieldOfView"],
-                    Distance = Window.Flags["Trigger/Distance"],
-                    BodyParts = Window.Flags["Trigger/BodyParts"],
-                    TeamCheck = Window.Flags["TeamCheck"],
-                    
                     Prediction = {
                         Enabled = Window.Flags["Trigger/Prediction/Enabled"],
                         Velocity = Window.Flags["Trigger/Prediction/Velocity"]
-                    }
-                }) if not TriggerHitbox or not Trigger then break end
+                    },
+                    DynamicFOV = Window.Flags["Trigger/DynamicFOV"],
+                    FieldOfView = Window.Flags["Trigger/FieldOfView"],
+                    Distance = Window.Flags["Trigger/Distance"],
+                    Priority = Window.Flags["Trigger/Priority"],
+                    TeamCheck = Window.Flags["TeamCheck"]
+                }) if not TriggerHB or not Trigger then break end
             end
         end mouse1release()
     end
