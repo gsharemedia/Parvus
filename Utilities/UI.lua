@@ -1,3 +1,4 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 local InsertService = game:GetService("InsertService")
 local HttpService = game:GetService("HttpService")
@@ -6,8 +7,8 @@ local PlayerService = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 
 local Debug,LocalPlayer = false,PlayerService.LocalPlayer
-local MainAssetFolder = Debug and game.ReplicatedStorage["BracketV3.2"]
-or InsertService:LoadLocalAsset("rbxassetid://9153139105")
+local MainAssetFolder = Debug and ReplicatedStorage.BracketV32
+	or InsertService:LoadLocalAsset("rbxassetid://9153139105")
 
 local function GetAsset(AssetPath)
     AssetPath = AssetPath:split("/")
@@ -147,7 +148,7 @@ end
 local function InitToolTip(Parent,ScreenAsset,Text)
     Parent.MouseEnter:Connect(function()
         ScreenAsset.ToolTip.Text = Text
-        ScreenAsset.ToolTip.Size = UDim2.new(0,ScreenAsset.ToolTip.TextBounds.X + 6,0,ScreenAsset.ToolTip.TextBounds.Y + 6)
+        ScreenAsset.ToolTip.Size = UDim2.new(0,ScreenAsset.ToolTip.TextBounds.X + 2,0,ScreenAsset.ToolTip.TextBounds.Y + 2)
         ScreenAsset.ToolTip.Visible = true
     end)
     Parent.MouseLeave:Connect(function()
@@ -158,12 +159,12 @@ local function InitScreen()
     local ScreenAsset = GetAsset("Screen/Bracket")
     if not Debug then sethiddenproperty(ScreenAsset,"OnTopOfCoreBlur",true) end
     ScreenAsset.Name = "Bracket " .. game:GetService("HttpService"):GenerateGUID(false)
-    --ScreenAsset.Parent = Debug and game.Players.LocalPlayer.PlayerGui or CoreGui
-    if Debug then
-        ScreenAsset.Parent = game.Players.LocalPlayer.PlayerGui
+    ScreenAsset.Parent = Debug and LocalPlayer:FindFirstChildOfClass("PlayerGui") or CoreGui
+    --[[if Debug then
+        ScreenAsset.Parent = LocalPlayer.PlayerGui
     else
         Parvus.Utilities.Misc:HideObject(ScreenAsset)
-    end
+    end]]
     return {ScreenAsset = ScreenAsset}
 end
 local function InitWindow(ScreenAsset,Window)
@@ -266,8 +267,8 @@ local function InitWindow(ScreenAsset,Window)
         ScreenAsset.Watermark.Title.Text = Watermark.Title
         ScreenAsset.Watermark.Position = UDim2.new(0.95,0,0,10)
         ScreenAsset.Watermark.Size = UDim2.new(
-        0,ScreenAsset.Watermark.Title.TextBounds.X + 10,
-        0,ScreenAsset.Watermark.Title.TextBounds.Y + 10)
+        0,ScreenAsset.Watermark.Title.TextBounds.X + 6,
+        0,ScreenAsset.Watermark.Title.TextBounds.Y + 6)
         MakeDraggable(ScreenAsset.Watermark,ScreenAsset.Watermark,function(Position)
             Window.Flags[Watermark.Flag] = 
             {Position.X.Scale,Position.X.Offset,
@@ -286,7 +287,7 @@ local function InitWindow(ScreenAsset,Window)
         function Watermark:SetTitle(Text)
             Watermark.Title = Text
             ScreenAsset.Watermark.Title.Text = Watermark.Title
-            ScreenAsset.Watermark.Size = UDim2.new(0,ScreenAsset.Watermark.Title.TextBounds.X + 10,0,ScreenAsset.Watermark.Title.TextBounds.Y + 10)
+            ScreenAsset.Watermark.Size = UDim2.new(0,ScreenAsset.Watermark.Title.TextBounds.X + 6,0,ScreenAsset.Watermark.Title.TextBounds.Y + 6)
         end
         function Watermark:SetValue(Table)
             if not Table then return end
@@ -358,7 +359,7 @@ local function InitTab(ScreenAsset,WindowAsset,Window,Tab)
     TabButtonAsset.Parent = WindowAsset.TabButtonContainer
     TabButtonAsset.Text = Tab.Name
     TabButtonAsset.Highlight.BackgroundColor3 = Window.Color
-    TabButtonAsset.Size = UDim2.new(0,TabButtonAsset.TextBounds.X + 10,1,-1)
+    TabButtonAsset.Size = UDim2.new(0,TabButtonAsset.TextBounds.X + 6,1,-1)
     TabAsset.Parent = WindowAsset.TabContainer
     TabAsset.Visible = false
 
@@ -388,7 +389,7 @@ local function InitTab(ScreenAsset,WindowAsset,Window,Tab)
     function Tab:SetName(Name)
         Tab.Name = Name
         TabButtonAsset.Text = Name
-        TabButtonAsset.Size = UDim2.new(0,TabButtonAsset.TextBounds.X + 10,1,-1)
+        TabButtonAsset.Size = UDim2.new(0,TabButtonAsset.TextBounds.X + 6,1,-1)
     end
 
     return function(Side)
@@ -400,7 +401,7 @@ local function InitSection(Parent,Section)
 
     SectionAsset.Parent = Parent
     SectionAsset.Title.Text = Section.Name
-    SectionAsset.Title.Size = UDim2.new(0,SectionAsset.Title.TextBounds.X + 10,0,2)
+    SectionAsset.Title.Size = UDim2.new(0,SectionAsset.Title.TextBounds.X + 6,0,2)
 
     SectionAsset.Container.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         SectionAsset.Size = UDim2.new(1,0,0,SectionAsset.Container.ListLayout.AbsoluteContentSize.Y + 15)
@@ -409,7 +410,7 @@ local function InitSection(Parent,Section)
     function Section:SetName(Name)
         Section.Name = Name
         SectionAsset.Title.Text = Name
-        SectionAsset.Title.Size = UDim2.new(0,Section.Title.TextBounds.X + 10,0,2)
+        SectionAsset.Title.Size = UDim2.new(0,Section.Title.TextBounds.X + 6,0,2)
     end
 
     return SectionAsset.Container
@@ -473,7 +474,7 @@ local function InitButton(Parent,ScreenAsset,Window,Button)
         ButtonAsset.BorderColor3 = Color3.new(0,0,0)
     end)
     ButtonAsset.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        ButtonAsset.Size = UDim2.new(1,0,0,ButtonAsset.Title.TextBounds.Y + 6)
+        ButtonAsset.Size = UDim2.new(1,0,0,ButtonAsset.Title.TextBounds.Y + 2)
     end)
 
     function Button:SetName(Name)
@@ -683,11 +684,13 @@ local function InitSlider(Parent,ScreenAsset,Window,Slider)
     end
 
     SliderAsset.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        SliderAsset.Size = UDim2.new(1,0,0,SliderAsset.Title.TextBounds.Y + 16)
+        SliderAsset.Value.Size = UDim2.new(0,SliderAsset.Value.TextBounds.X,0,16)
+		SliderAsset.Title.Size = UDim2.new(1,-SliderAsset.Value.Size.X.Offset,0,16)
+		SliderAsset.Size = UDim2.new(1,0,0,SliderAsset.Title.TextBounds.Y + 8)
     end)
     SliderAsset.Value:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        SliderAsset.Value.Size = UDim2.new(0,SliderAsset.Value.TextBounds.X,1,-10)
-        SliderAsset.Title.Size = UDim2.new(1,-SliderAsset.Value.Size.X.Offset,1,-10)
+        SliderAsset.Value.Size = UDim2.new(0,SliderAsset.Value.TextBounds.X,0,16)
+		SliderAsset.Title.Size = UDim2.new(1,-SliderAsset.Value.Size.X.Offset,0,16)
     end)
     SliderAsset.Value.FocusLost:Connect(function()
         if not tonumber(SliderAsset.Value.Text) then
@@ -726,10 +729,10 @@ local function InitTextbox(Parent,ScreenAsset,Window,Textbox)
     TextboxAsset.Background.Input.PlaceholderText = Textbox.Placeholder
 
     TextboxAsset.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        TextboxAsset.Size = UDim2.new(1,0,0,(TextboxAsset.Title.TextBounds.Y + 6) + (TextboxAsset.Background.Input.TextBounds.Y + 6))
+        TextboxAsset.Size = UDim2.new(1,0,0,(TextboxAsset.Title.TextBounds.Y + 2) + (TextboxAsset.Background.Input.TextBounds.Y + 2))
     end)
     TextboxAsset.Background.Input:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        TextboxAsset.Background.Size = UDim2.new(1,0,0,TextboxAsset.Background.Input.TextBounds.Y + 6)
+        TextboxAsset.Background.Size = UDim2.new(1,0,0,TextboxAsset.Background.Input.TextBounds.Y + 2)
     end)
     TextboxAsset.Background.Input.FocusLost:Connect(function(EnterPressed)
         if not EnterPressed then return end
@@ -891,12 +894,12 @@ local function InitDropdown(Parent,ScreenAsset,Window,Dropdown)
         end
     end)
     DropdownAsset.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        DropdownAsset.Title.Size = UDim2.new(1,0,0,DropdownAsset.Title.TextBounds.Y + 6)
+        DropdownAsset.Title.Size = UDim2.new(1,0,0,DropdownAsset.Title.TextBounds.Y + 2)
         DropdownAsset.Background.Position = UDim2.new(0.5,0,0,DropdownAsset.Title.Size.Y.Offset)
         DropdownAsset.Size = UDim2.new(1,0,0,DropdownAsset.Title.Size.Y.Offset + DropdownAsset.Background.Size.Y.Offset)
     end)
     DropdownAsset.Background.Value:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        DropdownAsset.Background.Size = UDim2.new(1,0,0,DropdownAsset.Background.Value.TextBounds.Y + 6)
+        DropdownAsset.Background.Size = UDim2.new(1,0,0,DropdownAsset.Background.Value.TextBounds.Y + 2)
         DropdownAsset.Size = UDim2.new(1,0,0,DropdownAsset.Title.Size.Y.Offset + DropdownAsset.Background.Size.Y.Offset)
     end)
 
@@ -954,7 +957,7 @@ local function InitDropdown(Parent,ScreenAsset,Window,Dropdown)
             SetOptionState(Option,not Option.Value)
         end)
         OptionAsset.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
-            OptionAsset.Size = UDim2.new(1,0,0,OptionAsset.Title.TextBounds.Y + 6)
+            OptionAsset.Size = UDim2.new(1,0,0,OptionAsset.Title.TextBounds.Y + 2)
         end)
     end
     for Index, Option in pairs(Dropdown.List) do
@@ -976,7 +979,7 @@ local function InitDropdown(Parent,ScreenAsset,Window,Dropdown)
                 SetOptionState(Option,not Option.Value)
             end)
             OptionAsset.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
-                OptionAsset.Size = UDim2.new(1,0,0,OptionAsset.Title.TextBounds.Y + 6)
+                OptionAsset.Size = UDim2.new(1,0,0,OptionAsset.Title.TextBounds.Y + 2)
             end)
         end
         for Index, Option in pairs(Dropdown.List) do

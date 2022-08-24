@@ -8,10 +8,11 @@ if Parvus and Parvus.Loaded then
 end
 
 local PlayerService = game:GetService("Players")
+repeat task.wait() until PlayerService.LocalPlayer
 local LocalPlayer = PlayerService.LocalPlayer
 
 local function GetSupportedGame() local Game
-    for Id, Info in pairs(Parvus.Games) do
+    for Id,Info in pairs(Parvus.Games) do
         if tostring(game.GameId) == Id then
             Game = Info break
         end
