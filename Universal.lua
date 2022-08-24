@@ -271,6 +271,11 @@ local function TeamCheck(Enabled,Player)
     return LocalPlayer.Team ~= Player.Team
 end
 
+local function DistanceCheck(Enabled,Distance,MaxDistance)
+    if not Enabled then return true end
+    return Distance * 0.28 <= MaxDistance
+end
+
 local function WallCheck(Enabled,Hitbox,Character)
     if not Enabled then return true end
     local Camera = Workspace.CurrentCamera
@@ -379,6 +384,7 @@ RunService.Heartbeat:Connect(function()
     SilentAim = GetHitbox({
         Enabled = Window.Flags["SilentAim/Enabled"],
         WallCheck = Window.Flags["SilentAim/WallCheck"],
+		DistanceCheck = Window.Flags["SilentAim/DistanceCheck"],
         DynamicFOV = Window.Flags["SilentAim/DynamicFOV"],
         FieldOfView = Window.Flags["SilentAim/FieldOfView"],
         Distance = Window.Flags["SilentAim/Distance"],
@@ -389,6 +395,7 @@ RunService.Heartbeat:Connect(function()
         GetHitbox({
             Enabled = Window.Flags["Aimbot/Enabled"],
             WallCheck = Window.Flags["Aimbot/WallCheck"],
+			DistanceCheck = Window.Flags["Aimbot/DistanceCheck"],
             DynamicFOV = Window.Flags["Aimbot/DynamicFOV"],
             FieldOfView = Window.Flags["Aimbot/FieldOfView"],
             Distance = Window.Flags["Aimbot/Distance"],
