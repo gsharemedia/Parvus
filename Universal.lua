@@ -7,8 +7,8 @@ local Lighting = game:GetService("Lighting")
 local LocalPlayer = PlayerService.LocalPlayer
 local Aimbot,SilentAim,Trigger = false,nil,nil
 
-local Window = Gshare.Utilities.UI:Window({
-    Name = "Gshare Media — "..Gshare.Game,
+local Window = Parvus.Utilities.UI:Window({
+    Name = "Gshare Media — "..Parvus.Game,
     Position = UDim2.new(0.05,0,0.5,-248)
     }) do Window:Watermark({Enabled = true})
 
@@ -155,7 +155,7 @@ local Window = Gshare.Utilities.UI:Window({
         local LightingSection = VisualsTab:Section({Name = "Lighting",Side = "Right"}) do
             LightingSection:Toggle({Name = "Enabled",Flag = "Lighting/Enabled",Value = false,
             Callback = function(Bool) if Bool then return end
-                for Property,Value in pairs(Gshare.Utilities.Misc.DefaultLighting) do
+                for Property,Value in pairs(Parvus.Utilities.Misc.DefaultLighting) do
                     Lighting[Property] = Value
                 end
             end})
@@ -192,11 +192,11 @@ local Window = Gshare.Utilities.UI:Window({
         end
         SettingsTab:AddConfigSection("Left")
         SettingsTab:Button({Name = "Rejoin",Side = "Left",
-        Callback = Gshare.Utilities.Misc.ReJoin})
+        Callback = Parvus.Utilities.Misc.ReJoin})
         SettingsTab:Button({Name = "Server Hop",Side = "Left",
-        Callback = Gshare.Utilities.Misc.ServerHop})
+        Callback = Parvus.Utilities.Misc.ServerHop})
         SettingsTab:Button({Name = "Join Discord Server",Side = "Left",
-        Callback = Gshare.Utilities.Misc.JoinDiscord})
+        Callback = Parvus.Utilities.Misc.JoinDiscord})
         :ToolTip("Join for support, updates and more!")
         local BackgroundSection = SettingsTab:Section({Name = "Background",Side = "Right"}) do
             BackgroundSection:Dropdown({Name = "Image",Flag = "Background/Image",List = {
@@ -259,13 +259,13 @@ Window:LoadDefaultConfig()
 Window:SetValue("UI/Toggle",
 Window.Flags["UI/OOL"])
 
-Gshare.Utilities.Misc:SetupWatermark(Window)
-Gshare.Utilities.Misc:SetupLighting(Window.Flags)
-Gshare.Utilities.Drawing:SetupCursor(Window.Flags)
+Parvus.Utilities.Misc:SetupWatermark(Window)
+Parvus.Utilities.Misc:SetupLighting(Window.Flags)
+Parvus.Utilities.Drawing:SetupCursor(Window.Flags)
 
-Gshare.Utilities.Drawing:FOVCircle("Aimbot",Window.Flags)
-Gshare.Utilities.Drawing:FOVCircle("Trigger",Window.Flags)
-Gshare.Utilities.Drawing:FOVCircle("SilentAim",Window.Flags)
+Parvus.Utilities.Drawing:FOVCircle("Aimbot",Window.Flags)
+Parvus.Utilities.Drawing:FOVCircle("Trigger",Window.Flags)
+Parvus.Utilities.Drawing:FOVCircle("SilentAim",Window.Flags)
 
 local function TeamCheck(Enabled,Player)
     if not Enabled then return true end
@@ -411,7 +411,7 @@ RunService.Heartbeat:Connect(function()
         })
     end
 end)
-Gshare.Utilities.Misc:NewThreadLoop(0,function()
+Parvus.Utilities.Misc:NewThreadLoop(0,function()
     if not Trigger then return end
     local TriggerHitbox = GetHitboxWithPrediction({
         Enabled = Window.Flags["Trigger/Enabled"],
@@ -455,11 +455,11 @@ end)
 
 for Index,Player in pairs(PlayerService:GetPlayers()) do
     if Player == LocalPlayer then continue end
-    Gshare.Utilities.Drawing:AddESP(Player,"Player","ESP/Player",Window.Flags)
+    Parvus.Utilities.Drawing:AddESP(Player,"Player","ESP/Player",Window.Flags)
 end
 PlayerService.PlayerAdded:Connect(function(Player)
-    Gshare.Utilities.Drawing:AddESP(Player,"Player","ESP/Player",Window.Flags)
+    Parvus.Utilities.Drawing:AddESP(Player,"Player","ESP/Player",Window.Flags)
 end)
 PlayerService.PlayerRemoving:Connect(function(Player)
-    Gshare.Utilities.Drawing:RemoveESP(Player)
+    Parvus.Utilities.Drawing:RemoveESP(Player)
 end)
