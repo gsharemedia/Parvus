@@ -77,7 +77,7 @@ end
 
 function Misc:ReJoin()
     if #PlayerService:GetPlayers() <= 1 then
-        LocalPlayer:Kick("\nParvus Hub\nRejoining...")
+        LocalPlayer:Kick("\nGshare Media\nRejoining...")
         task.wait(0.5) TeleportService:Teleport(game.PlaceId)
     else
         TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
@@ -96,7 +96,7 @@ function Misc:ServerHop()
         TeleportService:TeleportToPlaceInstance(game.PlaceId, Servers[math.random(1, #Servers)])
     else
         Parvus.Utilities.UI:Notification({
-            Title = "Parvus Hub",
+            Title = "Gshare Media",
             Description = "Couldn't find a server",
             Duration = 5
         })
@@ -126,7 +126,7 @@ function Misc:SetupWatermark(Window)
     RunService.Heartbeat:Connect(function()
         if Window.Flags["UI/Watermark"] then
             Window.Watermark:SetTitle(string.format(
-                "Parvus Hub    %s    %i FPS    %i MS",
+                "Gshare Media    %s    %i FPS    %i MS",
                 os.date("%X"),GetFPS(),math.round(Ping:GetValue())
             ))
         end

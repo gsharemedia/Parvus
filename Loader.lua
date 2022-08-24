@@ -1,7 +1,7 @@
 repeat task.wait() until game.GameId ~= 0
 if Parvus and Parvus.Loaded then
     Parvus.Utilities.UI:Notification({
-        Title = "Parvus Hub",
+        Title = "Gshare Media",
         Description = "Script already executed!",
         Duration = 5
     }) return
@@ -87,7 +87,7 @@ if SupportedGame then
     Parvus.Game = SupportedGame.Name
     LoadScript(SupportedGame.Script)
     Parvus.Utilities.UI:Notification({
-        Title = "Parvus Hub",
+        Title = "Gshare Media",
         Description = Parvus.Game .. " loaded!",
         Duration = 5
     }) Parvus.Loaded = true
