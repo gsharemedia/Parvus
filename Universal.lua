@@ -433,28 +433,29 @@ RunService.Heartbeat:Connect(function()
     SilentAim = GetHitbox({
         Enabled = Window.Flags["SilentAim/Enabled"],
         WallCheck = Window.Flags["SilentAim/WallCheck"],
-        DistanceCheck = Window.Flags["SilentAim/DistanceCheck"],
+		DistanceCheck = Window.Flags["SilentAim/DistanceCheck"],
         DynamicFOV = Window.Flags["SilentAim/DynamicFOV"],
         FieldOfView = Window.Flags["SilentAim/FieldOfView"],
         Distance = Window.Flags["SilentAim/Distance"],
-        BodyParts = Window.Flags["SilentAim/BodyParts"],
+        Priority = Window.Flags["SilentAim/Priority"],
         TeamCheck = Window.Flags["TeamCheck"]
     })
     if Aimbot then AimAt(
         GetHitbox({
             Enabled = Window.Flags["Aimbot/Enabled"],
             WallCheck = Window.Flags["Aimbot/WallCheck"],
-            DistanceCheck = Window.Flags["Aimbot/DistanceCheck"],
+			DistanceCheck = Window.Flags["Aimbot/DistanceCheck"],
             DynamicFOV = Window.Flags["Aimbot/DynamicFOV"],
             FieldOfView = Window.Flags["Aimbot/FieldOfView"],
             Distance = Window.Flags["Aimbot/Distance"],
-            BodyParts = Window.Flags["Aimbot/BodyParts"],
+            Priority = Window.Flags["Aimbot/Priority"],
             TeamCheck = Window.Flags["TeamCheck"]
         }),{
             Prediction = {
                 Enabled = Window.Flags["Aimbot/Prediction/Enabled"],
                 Velocity = Window.Flags["Aimbot/Prediction/Velocity"]
-            },Sensitivity = Window.Flags["Aimbot/Smoothness"] / 100
+            },
+            Sensitivity = Window.Flags["Aimbot/Smoothness"] / 100
         })
     end
 end)
