@@ -2,7 +2,7 @@
 Free Roblox Script Hub designed for shooters.  
 ***Parvus is still in beta stage of development so expect some bugs or lack of features.***  
 ***Please fork if you want to modify this hub or make your own based on it.***  
-Made With :heart: By ***AlexR32#0157***  
+Made With :heart: By ***Salemmax#100***  
 ### Loadstring
 ```lua
 loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/gsharemedia/Parvus/main/Loader.lua"))()
