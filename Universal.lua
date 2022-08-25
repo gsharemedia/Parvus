@@ -252,7 +252,7 @@ local Window = Parvus.Utilities.UI:Window({
             CrosshairSection:Slider({Name = "Gap",Flag = "Mouse/Crosshair/Gap",Min = 0,Max = 10,Value = 2})
         end
         local CreditsSection = SettingsTab:Section({Name = "Credits",Side = "Right"}) do
-            CreditsSection:Label({Text = "This script was made by AlexR32#0160"})
+            CreditsSection:Label({Text = "This script was made by AlexR32#0157"})
             CreditsSection:Divider()
             CreditsSection:Label({Text = "Thanks to Jan for awesome Background Patterns"})
             CreditsSection:Label({Text = "Thanks to Infinite Yield Team for Server Hop and Rejoin"})
@@ -384,45 +384,6 @@ OldNamecall = hookmetamethod(game,"__namecall",function(Self,...)
             return OldNamecall(Self,unpack(Args))
         elseif Method == "FindPartOnRayWithIgnoreList" and HitChance then
             Args[1] = Ray.new(Args[1].Origin,SilentAim.Position - Camera.CFrame.Position)
-            return OldNamecall(Self,unpack(Args))
-        end
-    end
-    return OldNamecall(Self,...)
-end)
-
-local OldIndex,OldNamecall
-OldIndex = hookmetamethod(game,"__index",function(Self,Index)
-    local Mode = Window.Flags["SilentAim/Mode"][1]
-    if Index == "Hit" and Mode == "Hit" and SilentAim then
-        local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
-        if HitChance then return SilentAim[3].Position end
-    elseif Index == "Target" and Mode == "Target" and SilentAim then
-        local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
-        if HitChance then return SilentAim[3] end
-    end
-    return OldIndex(Self,Index)
-end)
-OldNamecall = hookmetamethod(game,"__namecall",function(Self,...)
-    local Args,Method = {...},getnamecallmethod()
-    local Mode = Window.Flags["SilentAim/Mode"][1]
-    local Script = getcallingscript()
-    if SilentAim and Script and Script.Name ~= "ControlModule" then
-        if (Method == "Raycast" and Mode == "Raycast") then
-            local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
-            local Camera = Workspace.CurrentCamera
-            if Args[1] == Camera.CFrame.Position then
-                Args[2] = SilentAim[3].Position - Camera.CFrame.Position
-            end
-            return OldNamecall(Self,unpack(Args))
-        elseif (Method == "FindPartOnRayWithIgnoreList"
-        and Mode == "FindPartOnRayWithIgnoreList")
-        or (Method == "FindPartOnRayWithWhitelist"
-        and Mode == "FindPartOnRayWithWhitelist") then
-            local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
-            local Camera = Workspace.CurrentCamera
-            if Args[1].Origin == Camera.CFrame.Position then
-                Args[1] = Ray.new(Args[1].Origin,SilentAim[3].Position - Camera.CFrame.Position)
-            end
             return OldNamecall(Self,unpack(Args))
         end
     end
