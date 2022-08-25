@@ -358,7 +358,6 @@ local function GetHitboxWithPrediction(Config)
     return ClosestHitbox
 end
 
-##\\max\\
 local function AimAt(Hitbox,Config)
     if not Hitbox then return end
     local Camera = Workspace.CurrentCamera
