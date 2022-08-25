@@ -252,7 +252,7 @@ local Window = Parvus.Utilities.UI:Window({
             CrosshairSection:Slider({Name = "Gap",Flag = "Mouse/Crosshair/Gap",Min = 0,Max = 10,Value = 2})
         end
         local CreditsSection = SettingsTab:Section({Name = "Credits",Side = "Right"}) do
-            CreditsSection:Label({Text = "This script was made by AlexR32#0157"})
+            CreditsSection:Label({Text = "This script was made by AlexR32#0160"})
             CreditsSection:Divider()
             CreditsSection:Label({Text = "Thanks to Jan for awesome Background Patterns"})
             CreditsSection:Label({Text = "Thanks to Infinite Yield Team for Server Hop and Rejoin"})
