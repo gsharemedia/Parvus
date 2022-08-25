@@ -8,7 +8,7 @@ local LocalPlayer = PlayerService.LocalPlayer
 local Aimbot,SilentAim,Trigger = false,nil,nil
 
 local Window = Parvus.Utilities.UI:Window({
-    Name = "Gshare Media — "..Parvus.Game,
+    Name = "Parvus Hub — "..Parvus.Game,
     Position = UDim2.new(0.05,0,0.5,-248)
     }) do Window:Watermark({Enabled = true})
 
@@ -26,7 +26,7 @@ local Window = Parvus.Utilities.UI:Window({
         local AimbotSection = AimAssistTab:Section({Name = "Aimbot",Side = "Left"}) do
             AimbotSection:Toggle({Name = "Enabled",Flag = "Aimbot/Enabled",Value = false})
             AimbotSection:Toggle({Name = "Visibility Check",Flag = "Aimbot/WallCheck",Value = false})
-			AimbotSection:Toggle({Name = "Distance Check",Flag = "Aimbot/DistanceCheck",Value = false})
+            AimbotSection:Toggle({Name = "Distance Check",Flag = "Aimbot/DistanceCheck",Value = false})
             AimbotSection:Toggle({Name = "Dynamic FOV",Flag = "Aimbot/DynamicFOV",Value = false})
             AimbotSection:Keybind({Name = "Keybind",Flag = "Aimbot/Keybind",Value = "MouseButton2",
             Mouse = true,Callback = function(Key,KeyDown) Aimbot = Window.Flags["Aimbot/Enabled"] and KeyDown end})
@@ -60,7 +60,7 @@ local Window = Parvus.Utilities.UI:Window({
             SilentAimSection:Toggle({Name = "Enabled",Flag = "SilentAim/Enabled",Value = false})
             :Keybind({Mouse = true,Flag = "SilentAim/Keybind"})
             SilentAimSection:Toggle({Name = "Visibility Check",Flag = "SilentAim/WallCheck",Value = false})
-			SilentAimSection:Toggle({Name = "Distance Check",Flag = "SilentAim/DistanceCheck",Value = false})
+            SilentAimSection:Toggle({Name = "Distance Check",Flag = "SilentAim/DistanceCheck",Value = false})
             SilentAimSection:Toggle({Name = "Dynamic FOV",Flag = "SilentAim/DynamicFOV",Value = false})
             SilentAimSection:Slider({Name = "Hit Chance",Flag = "SilentAim/HitChance",Min = 0,Max = 100,Value = 100,Unit = "%"})
             SilentAimSection:Slider({Name = "Field Of View",Flag = "SilentAim/FieldOfView",Min = 0,Max = 500,Value = 100})
@@ -81,11 +81,11 @@ local Window = Parvus.Utilities.UI:Window({
         local TriggerSection = AimAssistTab:Section({Name = "Trigger",Side = "Right"}) do
             TriggerSection:Toggle({Name = "Enabled",Flag = "Trigger/Enabled",Value = false})
             TriggerSection:Toggle({Name = "Visibility Check",Flag = "Trigger/WallCheck",Value = true})
-			TriggerSection:Toggle({Name = "Distance Check",Flag = "Trigger/DistanceCheck",Value = false})
+            TriggerSection:Toggle({Name = "Distance Check",Flag = "Trigger/DistanceCheck",Value = false})
             TriggerSection:Toggle({Name = "Dynamic FOV",Flag = "Trigger/DynamicFOV",Value = false})
             TriggerSection:Keybind({Name = "Keybind",Flag = "Trigger/Keybind",Value = "MouseButton2",
             Mouse = true,Callback = function(Key,KeyDown) Trigger = Window.Flags["Trigger/Enabled"] and KeyDown end})
-            TriggerSection:Slider({Name = "Field Of View",Flag = "Trigger/FieldOfView",Min = 0,Max = 500,Value = 10})
+            TriggerSection:Slider({Name = "Field Of View",Flag = "Trigger/FieldOfView",Min = 0,Max = 500,Value = 25})
             TriggerSection:Slider({Name = "Distance",Flag = "Trigger/Distance",Min = 25,Max = 1000,Value = 250,Unit = "meters"})
             TriggerSection:Slider({Name = "Delay",Flag = "Trigger/Delay",Min = 0,Max = 1,Precise = 2,Value = 0.15})
             TriggerSection:Toggle({Name = "Hold Mode",Flag = "Trigger/HoldMode",Value = false})
@@ -104,12 +104,12 @@ local Window = Parvus.Utilities.UI:Window({
             GlobalSection:Colorpicker({Name = "Enemy Color",Flag = "ESP/Player/Enemy",Value = {1,0.75,1,0,false}})
             GlobalSection:Toggle({Name = "Team Check",Flag = "ESP/Player/TeamCheck",Value = false})
             GlobalSection:Toggle({Name = "Use Team Color",Flag = "ESP/Player/TeamColor",Value = false})
-			GlobalSection:Toggle({Name = "Distance Check",Flag = "ESP/Player/DistanceCheck",Value = false})
+            GlobalSection:Toggle({Name = "Distance Check",Flag = "ESP/Player/DistanceCheck",Value = false})
             GlobalSection:Slider({Name = "Distance",Flag = "ESP/Player/Distance",Min = 25,Max = 1000,Value = 250,Unit = "meters"})
         end
         local BoxSection = VisualsTab:Section({Name = "Boxes",Side = "Left"}) do
             BoxSection:Toggle({Name = "Box Enabled",Flag = "ESP/Player/Box/Enabled",Value = false})
-			BoxSection:Toggle({Name = "Healthbar",Flag = "ESP/Player/Box/Healthbar",Value = false})
+            BoxSection:Toggle({Name = "Healthbar",Flag = "ESP/Player/Box/Healthbar",Value = false})
             BoxSection:Toggle({Name = "Filled",Flag = "ESP/Player/Box/Filled",Value = false})
             BoxSection:Toggle({Name = "Outline",Flag = "ESP/Player/Box/Outline",Value = true})
             BoxSection:Slider({Name = "Thickness",Flag = "ESP/Player/Box/Thickness",Min = 1,Max = 10,Value = 1})
@@ -119,10 +119,10 @@ local Window = Parvus.Utilities.UI:Window({
             BoxSection:Toggle({Name = "Outline",Flag = "ESP/Player/Text/Outline",Value = true})
             BoxSection:Toggle({Name = "Autoscale",Flag = "ESP/Player/Text/Autoscale",Value = true})
             BoxSection:Dropdown({Name = "Font",Flag = "ESP/Player/Text/Font",List = {
-                {Name = "UI",Mode = "Button"},
+                {Name = "UI",Mode = "Button",Value = true},
                 {Name = "System",Mode = "Button"},
                 {Name = "Plex",Mode = "Button"},
-                {Name = "Monospace",Mode = "Button",Value = true}
+                {Name = "Monospace",Mode = "Button"}
             }})
             BoxSection:Slider({Name = "Size",Flag = "ESP/Player/Text/Size",Min = 13,Max = 100,Value = 16})
             BoxSection:Slider({Name = "Transparency",Flag = "ESP/Player/Text/Transparency",Min = 0,Max = 1,Precise = 2,Value = 0})
@@ -130,6 +130,7 @@ local Window = Parvus.Utilities.UI:Window({
         local OoVSection = VisualsTab:Section({Name = "Offscreen Arrows",Side = "Left"}) do
             OoVSection:Toggle({Name = "Enabled",Flag = "ESP/Player/Arrow/Enabled",Value = false})
             OoVSection:Toggle({Name = "Filled",Flag = "ESP/Player/Arrow/Filled",Value = true})
+            OoVSection:Toggle({Name = "Outline",Flag = "ESP/Player/Arrow/Outline",Value = true})
             OoVSection:Slider({Name = "Width",Flag = "ESP/Player/Arrow/Width",Min = 14,Max = 28,Value = 18})
             OoVSection:Slider({Name = "Height",Flag = "ESP/Player/Arrow/Height",Min = 14,Max = 28,Value = 28})
             OoVSection:Slider({Name = "Distance From Center",Flag = "ESP/Player/Arrow/Distance",Min = 80,Max = 200,Value = 200})
@@ -139,6 +140,7 @@ local Window = Parvus.Utilities.UI:Window({
         local HeadSection = VisualsTab:Section({Name = "Head Circles",Side = "Right"}) do
             HeadSection:Toggle({Name = "Enabled",Flag = "ESP/Player/Head/Enabled",Value = false})
             HeadSection:Toggle({Name = "Filled",Flag = "ESP/Player/Head/Filled",Value = true})
+            HeadSection:Toggle({Name = "Outline",Flag = "ESP/Player/Head/Outline",Value = true})
             HeadSection:Toggle({Name = "Autoscale",Flag = "ESP/Player/Head/Autoscale",Value = true})
             HeadSection:Slider({Name = "Radius",Flag = "ESP/Player/Head/Radius",Min = 1,Max = 10,Value = 8})
             HeadSection:Slider({Name = "NumSides",Flag = "ESP/Player/Head/NumSides",Min = 3,Max = 100,Value = 4})
@@ -166,21 +168,21 @@ local Window = Parvus.Utilities.UI:Window({
                     Lighting[Property] = Value
                 end
             end})
-            LightingSection:Colorpicker({Name = "Ambient",Flag = "Lighting/Ambient",Value = {1,0,0,0,false}})
+            LightingSection:Colorpicker({Name = "Ambient",Flag = "Lighting/Ambient",Value = {1,0,1,0,false}})
             LightingSection:Slider({Name = "Brightness",Flag = "Lighting/Brightness",Min = 0,Max = 10,Precise = 2,Value = 3})
-            LightingSection:Slider({Name = "ClockTime",Flag = "Lighting/ClockTime",Min = 0,Max = 24,Precise = 2,Value = 14.5})
-            LightingSection:Colorpicker({Name = "ColorShift_Bottom",Flag = "Lighting/ColorShift_Bottom",Value = {1,0,0,0,false}})
-            LightingSection:Colorpicker({Name = "ColorShift_Top",Flag = "Lighting/ColorShift_Top",Value = {1,0,0,0,false}})
-            LightingSection:Slider({Name = "EnvironmentDiffuseScale",Flag = "Lighting/EnvironmentDiffuseScale",Min = 0,Max = 1,Precise = 3,Value = 1})
-            LightingSection:Slider({Name = "EnvironmentSpecularScale",Flag = "Lighting/EnvironmentSpecularScale",Min = 0,Max = 1,Precise = 3,Value = 1})
+            LightingSection:Slider({Name = "ClockTime",Flag = "Lighting/ClockTime",Min = 0,Max = 24,Precise = 2,Value = 12})
+            LightingSection:Colorpicker({Name = "ColorShift_Bottom",Flag = "Lighting/ColorShift_Bottom",Value = {1,0,1,0,false}})
+            LightingSection:Colorpicker({Name = "ColorShift_Top",Flag = "Lighting/ColorShift_Top",Value = {1,0,1,0,false}})
+            LightingSection:Slider({Name = "EnvironmentDiffuseScale",Flag = "Lighting/EnvironmentDiffuseScale",Min = 0,Max = 1,Precise = 3,Value = 0})
+            LightingSection:Slider({Name = "EnvironmentSpecularScale",Flag = "Lighting/EnvironmentSpecularScale",Min = 0,Max = 1,Precise = 3,Value = 0})
             LightingSection:Slider({Name = "ExposureCompensation",Flag = "Lighting/ExposureCompensation",Min = -3,Max = 3,Precise = 2,Value = 0})
             LightingSection:Colorpicker({Name = "FogColor",Flag = "Lighting/FogColor",Value = {1,0,1,0,false}})
             LightingSection:Slider({Name = "FogEnd",Flag = "Lighting/FogEnd",Min = 0,Max = 100000,Value = 100000})
             LightingSection:Slider({Name = "FogStart",Flag = "Lighting/FogStart",Min = 0,Max = 100000,Value = 0})
             LightingSection:Slider({Name = "GeographicLatitude",Flag = "Lighting/GeographicLatitude",Min = 0,Max = 360,Precise = 1,Value = 23.5})
-            LightingSection:Toggle({Name = "GlobalShadows",Flag = "Lighting/GlobalShadows",Value = true})
-            LightingSection:Colorpicker({Name = "OutdoorAmbient",Flag = "Lighting/OutdoorAmbient",Value = {1,0,0,0,false}})
-            LightingSection:Slider({Name = "ShadowSoftness",Flag = "Lighting/ShadowSoftness",Min = 0,Max = 1,Precise = 2,Value = 1})
+            LightingSection:Toggle({Name = "GlobalShadows",Flag = "Lighting/GlobalShadows",Value = false})
+            LightingSection:Colorpicker({Name = "OutdoorAmbient",Flag = "Lighting/OutdoorAmbient",Value = {1,0,1,0,false}})
+            LightingSection:Slider({Name = "ShadowSoftness",Flag = "Lighting/ShadowSoftness",Min = 0,Max = 1,Precise = 2,Value = 0})
         end
     end
     local SettingsTab = Window:Tab({Name = "Settings"}) do
@@ -250,13 +252,13 @@ local Window = Parvus.Utilities.UI:Window({
             CrosshairSection:Slider({Name = "Gap",Flag = "Mouse/Crosshair/Gap",Min = 0,Max = 10,Value = 2})
         end
         local CreditsSection = SettingsTab:Section({Name = "Credits",Side = "Right"}) do
-            CreditsSection:Label({Text = "Tập lệnh này được thực hiện bởi Salemmax#105"})
+            CreditsSection:Label({Text = "This script was made by AlexR32#0157"})
             CreditsSection:Divider()
-            CreditsSection:Label({Text = "Cảm ơn Jan vì những mẫu nền tuyệt vời"})
-            CreditsSection:Label({Text = "Cảm ơn Nhóm lợi nhuận vô hạn vì Server Hop và Rejoin"})
-            CreditsSection:Label({Text = "Cảm ơn Blissful vì Offscreen Arrows"})
-            CreditsSection:Label({Text = "Cảm ơn cơ duyên cho Universal ESP"})
-            CreditsSection:Label({Text = "Cảm ơn el3tric cho Bracket V2"})
+            CreditsSection:Label({Text = "Thanks to Jan for awesome Background Patterns"})
+            CreditsSection:Label({Text = "Thanks to Infinite Yield Team for Server Hop and Rejoin"})
+            CreditsSection:Label({Text = "Thanks to Blissful for Offscreen Arrows"})
+            CreditsSection:Label({Text = "Thanks to coasts for Universal ESP"})
+            CreditsSection:Label({Text = "Thanks to el3tric for Bracket V2"})
             CreditsSection:Label({Text = "❤️ ❤️ ❤️ ❤️"})
         end
     end
@@ -273,6 +275,15 @@ Parvus.Utilities.Drawing:SetupCursor(Window.Flags)
 Parvus.Utilities.Drawing:FOVCircle("Aimbot",Window.Flags)
 Parvus.Utilities.Drawing:FOVCircle("Trigger",Window.Flags)
 Parvus.Utilities.Drawing:FOVCircle("SilentAim",Window.Flags)
+
+local RaycastParams = RaycastParams.new()
+RaycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+RaycastParams.IgnoreWater = true
+
+local function Raycast(Origin,Direction,Table)
+    RaycastParams.FilterDescendantsInstances = Table
+    return Workspace:Raycast(Origin,Direction,RaycastParams)
+end
 
 local function TeamCheck(Enabled,Player)
     if not Enabled then return true end
@@ -298,22 +309,21 @@ local function GetHitbox(Config)
     local Camera = Workspace.CurrentCamera
     
     local FieldOfView,ClosestHitbox = Config.DynamicFOV and
-    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView
-    or Config.FieldOfView,nil
+    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView or Config.FieldOfView
 
-    for Index, Player in pairs(PlayerService:GetPlayers()) do
-        local Character = Player.Character
-        local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
-        local IsAlive = Humanoid and Humanoid.Health > 0
-        if Player ~= LocalPlayer and IsAlive and TeamCheck(Config.TeamCheck,Player) then
-            for Index, HumanoidPart in pairs(Config.Priority) do
-                local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
+    for Index,Player in pairs(PlayerService:GetPlayers()) do
+        local Character = Player.Character if not Character then continue end
+        local Humanoid = Character:FindFirstChildOfClass("Humanoid") if not Humanoid then continue end
+        if Player ~= LocalPlayer and Humanoid.Health > 0 and TeamCheck(Config.TeamCheck,Player) then
+            for Index,BodyPart in pairs(Config.BodyParts) do
+                local Hitbox = Character:FindFirstChild(BodyPart) if not Hitbox then continue end
                 local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-                if Hitbox and Distance * 0.28 <= Config.Distance then
-                    local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Hitbox.Position)
+                if WallCheck(Config.WallCheck,Hitbox,Character)
+                and DistanceCheck(Config.DistanceCheck,Distance,Config.Distance) then
+                    local ScreenPosition,OnScreen = Camera:WorldToViewportPoint(Hitbox.Position)
                     local Magnitude = (Vector2.new(ScreenPosition.X, ScreenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
-                    if OnScreen and Magnitude < FieldOfView and WallCheck(Config.WallCheck,Hitbox,Character) then
-                        FieldOfView,ClosestHitbox = Magnitude,Hitbox
+                    if OnScreen and Magnitude < FieldOfView then
+                        FieldOfView,ClosestHitbox = Magnitude,{Player,Character,Hitbox,Distance,ScreenPosition}
                     end
                 end
             end
@@ -328,25 +338,25 @@ local function GetHitboxWithPrediction(Config)
     local Camera = Workspace.CurrentCamera
 
     local FieldOfView,ClosestHitbox = Config.DynamicFOV and
-    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView
-    or Config.FieldOfView,nil
+    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView or Config.FieldOfView
 
-    for Index, Player in pairs(PlayerService:GetPlayers()) do
-        local Character = Player.Character
-        local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
-        local IsAlive = Humanoid and Humanoid.Health > 0
-        if Player ~= LocalPlayer and IsAlive and TeamCheck(Config.TeamCheck,Player) then
-            for Index, HumanoidPart in pairs(Config.Priority) do
-                local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
+    for Index,Player in pairs(PlayerService:GetPlayers()) do
+        local Character = Player.Character if not Character then continue end
+        local Humanoid = Character:FindFirstChildOfClass("Humanoid") if not Humanoid then continue end
+        if Player ~= LocalPlayer and Humanoid.Health > 0 and TeamCheck(Config.TeamCheck,Player) then
+            for Index,BodyPart in pairs(Config.BodyParts) do
+                local Hitbox = Character:FindFirstChild(BodyPart) if not Hitbox then continue end
                 local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-                if Hitbox and Distance * 0.28 <= Config.Distance then
-                    local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * Distance) / Config.Prediction.Velocity
+
+                if WallCheck(Config.WallCheck,Hitbox,Character)
+                and DistanceCheck(Config.DistanceCheck,Distance,Config.Distance) then
+                    local PredictionVelocity = (Hitbox.AssemblyLinearVelocity * Distance) / Config.Prediction.Velocity
                     local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Config.Prediction.Enabled
-                    and Hitbox.Position + HitboxVelocityCorrection or Hitbox.Position)
+                    and Hitbox.Position + PredictionVelocity or Hitbox.Position)
 
                     local Magnitude = (Vector2.new(ScreenPosition.X, ScreenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
-                    if OnScreen and Magnitude < FieldOfView and WallCheck(Config.WallCheck,Hitbox,Character) then
-                        FieldOfView,ClosestHitbox = Magnitude,Hitbox
+                    if OnScreen and Magnitude < FieldOfView then
+                        FieldOfView,ClosestHitbox = Magnitude,{Player,Character,Hitbox,Distance,ScreenPosition}
                     end
                 end
             end
@@ -361,27 +371,49 @@ local function AimAt(Hitbox,Config)
     local Camera = Workspace.CurrentCamera
     local Mouse = UserInputService:GetMouseLocation()
 
-    local HitboxDistance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-    local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * HitboxDistance) / Config.Prediction.Velocity
-
+    local PredictionVelocity = (Hitbox[3].AssemblyLinearVelocity * Hitbox[4]) / Config.Prediction.Velocity
     local HitboxOnScreen = Camera:WorldToViewportPoint(Config.Prediction.Enabled
-    and Hitbox.Position + HitboxVelocityCorrection or Hitbox.Position)
+    and Hitbox[3].Position + PredictionVelocity or Hitbox[3].Position)
+    
     mousemoverel(
         (HitboxOnScreen.X - Mouse.X) * Config.Sensitivity,
         (HitboxOnScreen.Y - Mouse.Y) * Config.Sensitivity
     )
 end
 
-local OldNamecall
-OldNamecall = hookmetamethod(game,"__namecall",function(Self,...)
-    if SilentAim then local Args,Method = {...},getnamecallmethod()
-        local Camera = Workspace.CurrentCamera
+local OldIndex,OldNamecall
+OldIndex = hookmetamethod(game,"__index",function(Self,Index)
+    local Mode = Window.Flags["SilentAim/Mode"][1]
+    if Index == "Hit" and Mode == "Hit" and SilentAim then
         local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
-        if Method == "Raycast" and HitChance then
-            Args[2] = SilentAim.Position - Camera.CFrame.Position
+        if HitChance then return SilentAim[3].Position end
+    elseif Index == "Target" and Mode == "Target" and SilentAim then
+        local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
+        if HitChance then return SilentAim[3] end
+    end
+    return OldIndex(Self,Index)
+end)
+OldNamecall = hookmetamethod(game,"__namecall",function(Self,...)
+    local Args,Method = {...},getnamecallmethod()
+    local Mode = Window.Flags["SilentAim/Mode"][1]
+    local Script = getcallingscript()
+    if SilentAim and Script and Script.Name ~= "ControlModule" then
+        if (Method == "Raycast" and Mode == "Raycast") then
+            local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
+            local Camera = Workspace.CurrentCamera
+            if Args[1] == Camera.CFrame.Position then
+                Args[2] = SilentAim[3].Position - Camera.CFrame.Position
+            end
             return OldNamecall(Self,unpack(Args))
-        elseif Method == "FindPartOnRayWithIgnoreList" and HitChance then
-            Args[1] = Ray.new(Args[1].Origin,SilentAim.Position - Camera.CFrame.Position)
+        elseif (Method == "FindPartOnRayWithIgnoreList"
+        and Mode == "FindPartOnRayWithIgnoreList")
+        or (Method == "FindPartOnRayWithWhitelist"
+        and Mode == "FindPartOnRayWithWhitelist") then
+            local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
+            local Camera = Workspace.CurrentCamera
+            if Args[1].Origin == Camera.CFrame.Position then
+                Args[1] = Ray.new(Args[1].Origin,SilentAim[3].Position - Camera.CFrame.Position)
+            end
             return OldNamecall(Self,unpack(Args))
         end
     end
@@ -392,29 +424,28 @@ RunService.Heartbeat:Connect(function()
     SilentAim = GetHitbox({
         Enabled = Window.Flags["SilentAim/Enabled"],
         WallCheck = Window.Flags["SilentAim/WallCheck"],
-		DistanceCheck = Window.Flags["SilentAim/DistanceCheck"],
+        DistanceCheck = Window.Flags["SilentAim/DistanceCheck"],
         DynamicFOV = Window.Flags["SilentAim/DynamicFOV"],
         FieldOfView = Window.Flags["SilentAim/FieldOfView"],
         Distance = Window.Flags["SilentAim/Distance"],
-        Priority = Window.Flags["SilentAim/Priority"],
+        BodyParts = Window.Flags["SilentAim/BodyParts"],
         TeamCheck = Window.Flags["TeamCheck"]
     })
     if Aimbot then AimAt(
         GetHitbox({
             Enabled = Window.Flags["Aimbot/Enabled"],
             WallCheck = Window.Flags["Aimbot/WallCheck"],
-			DistanceCheck = Window.Flags["Aimbot/DistanceCheck"],
+            DistanceCheck = Window.Flags["Aimbot/DistanceCheck"],
             DynamicFOV = Window.Flags["Aimbot/DynamicFOV"],
             FieldOfView = Window.Flags["Aimbot/FieldOfView"],
             Distance = Window.Flags["Aimbot/Distance"],
-            Priority = Window.Flags["Aimbot/Priority"],
+            BodyParts = Window.Flags["Aimbot/BodyParts"],
             TeamCheck = Window.Flags["TeamCheck"]
         }),{
             Prediction = {
                 Enabled = Window.Flags["Aimbot/Prediction/Enabled"],
                 Velocity = Window.Flags["Aimbot/Prediction/Velocity"]
-            },
-            Sensitivity = Window.Flags["Aimbot/Smoothness"] / 100
+            },Sensitivity = Window.Flags["Aimbot/Smoothness"] / 100
         })
     end
 end)
