@@ -15,6 +15,13 @@ local Window = Parvus.Utilities.UI:Window({
     local AimAssistTab = Window:Tab({Name = "Combat"}) do
         local GlobalSection = AimAssistTab:Section({Name = "Global",Side = "Left"}) do
             GlobalSection:Toggle({Name = "Team Check",Flag = "TeamCheck",Value = false})
+            GlobalSection:Dropdown({Name = "Silent Aim Mode",Flag = "SilentAim/Mode",List = {
+                {Name = "Raycast",Mode = "Button",Value = true},
+                {Name = "FindPartOnRayWithIgnoreList",Mode = "Button"},
+                {Name = "FindPartOnRayWithWhitelist",Mode = "Button"},
+                {Name = "Hit",Mode = "Button"},
+                {Name = "Target",Mode = "Button"}
+            }})
         end
         local AimbotSection = AimAssistTab:Section({Name = "Aimbot",Side = "Left"}) do
             AimbotSection:Toggle({Name = "Enabled",Flag = "Aimbot/Enabled",Value = false})
@@ -243,7 +250,7 @@ local Window = Parvus.Utilities.UI:Window({
             CrosshairSection:Slider({Name = "Gap",Flag = "Mouse/Crosshair/Gap",Min = 0,Max = 10,Value = 2})
         end
         local CreditsSection = SettingsTab:Section({Name = "Credits",Side = "Right"}) do
-            CreditsSection:Label({Text = "This script was made by Salemmax#101"})
+            CreditsSection:Label({Text = "This script was made by Salemmax#102"})
             CreditsSection:Divider()
             CreditsSection:Label({Text = "Thanks to Jan for awesome Background Patterns"})
             CreditsSection:Label({Text = "Thanks to Infinite Yield Team for Server Hop and Rejoin"})
