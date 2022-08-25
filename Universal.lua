@@ -330,25 +330,25 @@ local function GetHitboxWithPrediction(Config)
     local Camera = Workspace.CurrentCamera
 
     local FieldOfView,ClosestHitbox = Config.DynamicFOV and
-    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView or Config.FieldOfView
+    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView
+    or Config.FieldOfView,nil
 
-    for Index,Player in pairs(PlayerService:GetPlayers()) do
-        local Character = Player.Character if not Character then continue end
-        local Humanoid = Character:FindFirstChildOfClass("Humanoid") if not Humanoid then continue end
-        if Player ~= LocalPlayer and Humanoid.Health > 0 and TeamCheck(Config.TeamCheck,Player) then
-            for Index,BodyPart in pairs(Config.BodyParts) do
-                local Hitbox = Character:FindFirstChild(BodyPart) if not Hitbox then continue end
+    for Index, Player in pairs(PlayerService:GetPlayers()) do
+        local Character = Player.Character
+        local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+        local IsAlive = Humanoid and Humanoid.Health > 0
+        if Player ~= LocalPlayer and IsAlive and TeamCheck(Config.TeamCheck,Player) then
+            for Index, HumanoidPart in pairs(Config.Priority) do
+                local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
                 local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-
-                if WallCheck(Config.WallCheck,Hitbox,Character)
-                and DistanceCheck(Config.DistanceCheck,Distance,Config.Distance) then
-                    local PredictionVelocity = (Hitbox.AssemblyLinearVelocity * Distance) / Config.Prediction.Velocity
+                if Hitbox and Distance * 0.28 <= Config.Distance then
+                    local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * Distance) / Config.Prediction.Velocity
                     local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Config.Prediction.Enabled
-                    and Hitbox.Position + PredictionVelocity or Hitbox.Position)
+                    and Hitbox.Position + HitboxVelocityCorrection or Hitbox.Position)
 
                     local Magnitude = (Vector2.new(ScreenPosition.X, ScreenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
-                    if OnScreen and Magnitude < FieldOfView then
-                        FieldOfView,ClosestHitbox = Magnitude,{Player,Character,Hitbox,Distance,ScreenPosition}
+                    if OnScreen and Magnitude < FieldOfView and WallCheck(Config.WallCheck,Hitbox,Character) then
+                        FieldOfView,ClosestHitbox = Magnitude,Hitbox
                     end
                 end
             end
@@ -358,6 +358,7 @@ local function GetHitboxWithPrediction(Config)
     return ClosestHitbox
 end
 
+##\\max\\
 local function AimAt(Hitbox,Config)
     if not Hitbox then return end
     local Camera = Workspace.CurrentCamera
