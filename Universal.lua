@@ -363,15 +363,32 @@ local function AimAt(Hitbox,Config)
     local Camera = Workspace.CurrentCamera
     local Mouse = UserInputService:GetMouseLocation()
 
-    local PredictionVelocity = (Hitbox[3].AssemblyLinearVelocity * Hitbox[4]) / Config.Prediction.Velocity
+    local HitboxDistance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
+    local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * HitboxDistance) / Config.Prediction.Velocity
+
     local HitboxOnScreen = Camera:WorldToViewportPoint(Config.Prediction.Enabled
-    and Hitbox[3].Position + PredictionVelocity or Hitbox[3].Position)
-    
+    and Hitbox.Position + HitboxVelocityCorrection or Hitbox.Position)
     mousemoverel(
         (HitboxOnScreen.X - Mouse.X) * Config.Sensitivity,
         (HitboxOnScreen.Y - Mouse.Y) * Config.Sensitivity
     )
 end
+
+local OldNamecall
+OldNamecall = hookmetamethod(game,"__namecall",function(Self,...)
+    if SilentAim then local Args,Method = {...},getnamecallmethod()
+        local Camera = Workspace.CurrentCamera
+        local HitChance = math.random(0,100) <= Window.Flags["SilentAim/HitChance"]
+        if Method == "Raycast" and HitChance then
+            Args[2] = SilentAim.Position - Camera.CFrame.Position
+            return OldNamecall(Self,unpack(Args))
+        elseif Method == "FindPartOnRayWithIgnoreList" and HitChance then
+            Args[1] = Ray.new(Args[1].Origin,SilentAim.Position - Camera.CFrame.Position)
+            return OldNamecall(Self,unpack(Args))
+        end
+    end
+    return OldNamecall(Self,...)
+end)
 
 local OldIndex,OldNamecall
 OldIndex = hookmetamethod(game,"__index",function(Self,Index)
