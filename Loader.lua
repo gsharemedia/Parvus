@@ -1,18 +1,17 @@
 repeat task.wait() until game.GameId ~= 0
 if Parvus and Parvus.Loaded then
     Parvus.Utilities.UI:Notification({
-        Title = "Gshare Media",
+        Title = "Parvus Hub",
         Description = "Script already executed!",
         Duration = 5
     }) return
 end
 
 local PlayerService = game:GetService("Players")
-repeat task.wait() until PlayerService.LocalPlayer
 local LocalPlayer = PlayerService.LocalPlayer
 
 local function GetSupportedGame() local Game
-    for Id,Info in pairs(Parvus.Games) do
+    for Id, Info in pairs(Parvus.Games) do
         if tostring(game.GameId) == Id then
             Game = Info break
         end
@@ -87,7 +86,7 @@ if SupportedGame then
     Parvus.Game = SupportedGame.Name
     LoadScript(SupportedGame.Script)
     Parvus.Utilities.UI:Notification({
-        Title = "Gshare Media",
+        Title = "Parvus Hub",
         Description = Parvus.Game .. " loaded!",
         Duration = 5
     }) Parvus.Loaded = true

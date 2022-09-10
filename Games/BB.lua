@@ -5,7 +5,7 @@ local PlayerService = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local TeamService = game:GetService("Teams")
 
-if game.PlaceVersion > 1289 then
+if game.PlaceVersion > 1274 then
     local Loaded,PromptLib = false,loadstring(game:HttpGet("https://raw.githubusercontent.com/AlexR32/Roblox/main/PromptLibrary.lua"))()
     PromptLib("Unsupported game version","You are at risk of getting autoban\nAre you sure you want to load Parvus?",{
         {Text = "Yes",LayoutOrder = 0,Primary = false,Callback = function() Loaded = true end},
@@ -20,7 +20,7 @@ GravityCorrection,Tortoiseshell
 = false,nil,nil,1600,150,2,
 require(ReplicatedStorage.TS)
 
-repeat task.wait() until not LocalPlayer.PlayerGui:FindFirstChild("LoadingGui").Enabled
+repeat task.wait() until not LocalPlayer.PlayerGui:FindFirstChild("LoadingGui")
 --local ReplicatedStorage = game:GetService("ReplicatedStorage")
 --local Tortoiseshell = require(ReplicatedStorage.TS)
 
@@ -50,7 +50,7 @@ local BanReasons,BanCommands = {
 }
 
 local Window = Parvus.Utilities.UI:Window({
-    Name = "Gshare Media — "..Parvus.Game,
+    Name = "Parvus Hub — "..Parvus.Game,
     Position = UDim2.new(0.05,0,0.5,-248)
     }) do Window:Watermark({Enabled = true})
 
@@ -59,35 +59,33 @@ local Window = Parvus.Utilities.UI:Window({
             AimbotSection:Toggle({Name = "Enabled",Flag = "Aimbot/Enabled",Value = false})
             AimbotSection:Toggle({Name = "Prediction",Flag = "Aimbot/Prediction",Value = false})
             AimbotSection:Toggle({Name = "Visibility Check",Flag = "Aimbot/WallCheck",Value = false})
-            AimbotSection:Toggle({Name = "Distance Check",Flag = "Aimbot/DistanceCheck",Value = false})
             AimbotSection:Toggle({Name = "Dynamic FOV",Flag = "Aimbot/DynamicFOV",Value = false})
             AimbotSection:Keybind({Name = "Keybind",Flag = "Aimbot/Keybind",Value = "MouseButton2",
             Mouse = true,Callback = function(Key,KeyDown) Aimbot = Window.Flags["Aimbot/Enabled"] and KeyDown end})
             AimbotSection:Slider({Name = "Smoothness",Flag = "Aimbot/Smoothness",Min = 0,Max = 100,Value = 25,Unit = "%"})
             AimbotSection:Slider({Name = "Field Of View",Flag = "Aimbot/FieldOfView",Min = 0,Max = 500,Value = 100})
             AimbotSection:Slider({Name = "Distance",Flag = "Aimbot/Distance",Min = 25,Max = 1000,Value = 250,Unit = "meters"})
-            AimbotSection:Dropdown({Name = "Body Parts",Flag = "Aimbot/BodyParts",List = {
+            AimbotSection:Dropdown({Name = "Priority",Flag = "Aimbot/Priority",List = {
                 {Name = "Head",Mode = "Toggle",Value = true},
-                {Name = "Neck",Mode = "Toggle"},
-                {Name = "Chest",Mode = "Toggle"},
-                {Name = "Abdomen",Mode = "Toggle"},
-                {Name = "Hips",Mode = "Toggle"}
+                {Name = "Neck",Mode = "Toggle",Value = true},
+                {Name = "Chest",Mode = "Toggle",Value = true},
+                {Name = "Abdomen",Mode = "Toggle",Value = true},
+                {Name = "Hips",Mode = "Toggle",Value = true}
             }})
         end
         local AFOVSection = AimAssistTab:Section({Name = "Aimbot FOV Circle",Side = "Left"}) do
             AFOVSection:Toggle({Name = "Enabled",Flag = "Aimbot/Circle/Enabled",Value = true})
             AFOVSection:Toggle({Name = "Filled",Flag = "Aimbot/Circle/Filled",Value = false})
-            AFOVSection:Colorpicker({Name = "Color",Flag = "Aimbot/Circle/Color",Value = {1,0.66666662693024,1,0.25,false}})
-            AFOVSection:Slider({Name = "NumSides",Flag = "Aimbot/Circle/NumSides",Min = 3,Max = 100,Value = 14})
-            AFOVSection:Slider({Name = "Thickness",Flag = "Aimbot/Circle/Thickness",Min = 1,Max = 10,Value = 2})
+            AFOVSection:Colorpicker({Name = "Color",Flag = "Aimbot/Circle/Color",Value = {1,0.75,1,0.5,false}})
+            AFOVSection:Slider({Name = "NumSides",Flag = "Aimbot/Circle/NumSides",Min = 3,Max = 100,Value = 100})
+            AFOVSection:Slider({Name = "Thickness",Flag = "Aimbot/Circle/Thickness",Min = 1,Max = 10,Value = 1})
         end
         local TFOVSection = AimAssistTab:Section({Name = "Trigger FOV Circle",Side = "Left"}) do
             TFOVSection:Toggle({Name = "Enabled",Flag = "Trigger/Circle/Enabled",Value = true})
             TFOVSection:Toggle({Name = "Filled",Flag = "Trigger/Circle/Filled",Value = false})
-            TFOVSection:Colorpicker({Name = "Color",Flag = "Trigger/Circle/Color",
-            Value = {0.0833333358168602,0.6666666269302368,1,0.25,false}})
-            TFOVSection:Slider({Name = "NumSides",Flag = "Trigger/Circle/NumSides",Min = 3,Max = 100,Value = 14})
-            TFOVSection:Slider({Name = "Thickness",Flag = "Trigger/Circle/Thickness",Min = 1,Max = 10,Value = 2})
+            TFOVSection:Colorpicker({Name = "Color",Flag = "Trigger/Circle/Color",Value = {1,0.25,1,0.5,true}})
+            TFOVSection:Slider({Name = "NumSides",Flag = "Trigger/Circle/NumSides",Min = 3,Max = 100,Value = 100})
+            TFOVSection:Slider({Name = "Thickness",Flag = "Trigger/Circle/Thickness",Min = 1,Max = 10,Value = 1})
         end
         local SilentAimSection = AimAssistTab:Section({Name = "Silent Aim",Side = "Right"}) do
             SilentAimSection:Toggle({Name = "Enabled",Flag = "SilentAim/Enabled",Value = false})
@@ -95,12 +93,11 @@ local Window = Parvus.Utilities.UI:Window({
             SilentAimSection:Toggle({Name = "AutoShoot",Flag = "BadBusiness/AutoShoot",Value = false})
             SilentAimSection:Toggle({Name = "AutoShoot 360 Mode",Flag = "BadBusiness/AutoShoot/AllFOV",Value = false})
             SilentAimSection:Toggle({Name = "Visibility Check",Flag = "SilentAim/WallCheck",Value = false})
-            SilentAimSection:Toggle({Name = "Distance Check",Flag = "SilentAim/DistanceCheck",Value = false})
             SilentAimSection:Toggle({Name = "Dynamic FOV",Flag = "SilentAim/DynamicFOV",Value = false})
             SilentAimSection:Slider({Name = "Hit Chance",Flag = "SilentAim/HitChance",Min = 0,Max = 100,Value = 100,Unit = "%"})
-            SilentAimSection:Slider({Name = "Field Of View",Flag = "SilentAim/FieldOfView",Min = 0,Max = 500,Value = 100})
-            SilentAimSection:Slider({Name = "Distance",Flag = "SilentAim/Distance",Min = 25,Max = 1000,Value = 1000,Unit = "meters"})
-            SilentAimSection:Dropdown({Name = "Body Parts",Flag = "SilentAim/BodyParts",List = {
+            SilentAimSection:Slider({Name = "Field Of View",Flag = "SilentAim/FieldOfView",Min = 0,Max = 500,Value = 50})
+            SilentAimSection:Slider({Name = "Distance",Flag = "SilentAim/Distance",Min = 25,Max = 1000,Value = 250,Unit = "meters"})
+            SilentAimSection:Dropdown({Name = "Priority",Flag = "SilentAim/Priority",List = {
                 {Name = "Head",Mode = "Toggle",Value = true},
                 {Name = "Neck",Mode = "Toggle"},
                 {Name = "Chest",Mode = "Toggle"},
@@ -111,44 +108,40 @@ local Window = Parvus.Utilities.UI:Window({
         local SAFOVSection = AimAssistTab:Section({Name = "Silent Aim FOV Circle",Side = "Right"}) do
             SAFOVSection:Toggle({Name = "Enabled",Flag = "SilentAim/Circle/Enabled",Value = true})
             SAFOVSection:Toggle({Name = "Filled",Flag = "SilentAim/Circle/Filled",Value = false})
-            SAFOVSection:Colorpicker({Name = "Color",Flag = "SilentAim/Circle/Color",
-            Value = {0.6666666865348816,0.6666666269302368,1,0.25,false}})
-            SAFOVSection:Slider({Name = "NumSides",Flag = "SilentAim/Circle/NumSides",Min = 3,Max = 100,Value = 14})
-            SAFOVSection:Slider({Name = "Thickness",Flag = "SilentAim/Circle/Thickness",Min = 1,Max = 10,Value = 2})
+            SAFOVSection:Colorpicker({Name = "Color",Flag = "SilentAim/Circle/Color",Value = {0.66666668653488,0.75,1,0.5,false}})
+            SAFOVSection:Slider({Name = "NumSides",Flag = "SilentAim/Circle/NumSides",Min = 3,Max = 100,Value = 100})
+            SAFOVSection:Slider({Name = "Thickness",Flag = "SilentAim/Circle/Thickness",Min = 1,Max = 10,Value = 1})
         end
         local TriggerSection = AimAssistTab:Section({Name = "Trigger",Side = "Right"}) do
             TriggerSection:Toggle({Name = "Enabled",Flag = "Trigger/Enabled",Value = false})
-            TriggerSection:Toggle({Name = "Prediction",Flag = "Trigger/Prediction",Value = true})
+            TriggerSection:Toggle({Name = "Prediction",Flag = "Trigger/Prediction",Value = false})
             TriggerSection:Toggle({Name = "Visibility Check",Flag = "Trigger/WallCheck",Value = true})
-            TriggerSection:Toggle({Name = "Distance Check",Flag = "Trigger/DistanceCheck",Value = false})
             TriggerSection:Toggle({Name = "Dynamic FOV",Flag = "Trigger/DynamicFOV",Value = false})
             TriggerSection:Keybind({Name = "Keybind",Flag = "Trigger/Keybind",Value = "MouseButton2",
             Mouse = true,Callback = function(Key,KeyDown) Trigger = Window.Flags["Trigger/Enabled"] and KeyDown end})
-            TriggerSection:Slider({Name = "Field Of View",Flag = "Trigger/FieldOfView",Min = 0,Max = 500,Value = 25})
+            TriggerSection:Slider({Name = "Field Of View",Flag = "Trigger/FieldOfView",Min = 0,Max = 500,Value = 10})
             TriggerSection:Slider({Name = "Distance",Flag = "Trigger/Distance",Min = 25,Max = 1000,Value = 250,Unit = "meters"})
             TriggerSection:Slider({Name = "Delay",Flag = "Trigger/Delay",Min = 0,Max = 1,Precise = 2,Value = 0.15})
             TriggerSection:Toggle({Name = "Hold Mode",Flag = "Trigger/HoldMode",Value = false})
-            TriggerSection:Dropdown({Name = "Body Parts",Flag = "Trigger/BodyParts",List = {
+            TriggerSection:Dropdown({Name = "Priority",Flag = "Trigger/Priority",List = {
                 {Name = "Head",Mode = "Toggle",Value = true},
-                {Name = "Neck",Mode = "Toggle"},
-                {Name = "Chest",Mode = "Toggle"},
-                {Name = "Abdomen",Mode = "Toggle"},
-                {Name = "Hips",Mode = "Toggle"}
+                {Name = "Neck",Mode = "Toggle",Value = true},
+                {Name = "Chest",Mode = "Toggle",Value = true},
+                {Name = "Abdomen",Mode = "Toggle",Value = true},
+                {Name = "Hips",Mode = "Toggle",Value = true}
             }})
         end
     end
     local VisualsTab = Window:Tab({Name = "Visuals"}) do
         local GlobalSection = VisualsTab:Section({Name = "Global",Side = "Left"}) do
-            GlobalSection:Colorpicker({Name = "Ally Color",Flag = "ESP/Player/Ally",Value = {0.3333333432674408,0.6666666269302368,1,0,false}})
-            GlobalSection:Colorpicker({Name = "Enemy Color",Flag = "ESP/Player/Enemy",Value = {1,0.6666666269302368,1,0,false}})
+            GlobalSection:Colorpicker({Name = "Ally Color",Flag = "ESP/Player/Ally",Value = {0.33333334326744,0.75,1,0,false}})
+            GlobalSection:Colorpicker({Name = "Enemy Color",Flag = "ESP/Player/Enemy",Value = {1,0.75,1,0,false}})
             GlobalSection:Toggle({Name = "Team Check",Flag = "ESP/Player/TeamCheck",Value = true})
             GlobalSection:Toggle({Name = "Use Team Color",Flag = "ESP/Player/TeamColor",Value = false})
-            GlobalSection:Toggle({Name = "Distance Check",Flag = "ESP/Player/DistanceCheck",Value = false})
             GlobalSection:Slider({Name = "Distance",Flag = "ESP/Player/Distance",Min = 25,Max = 1000,Value = 250,Unit = "meters"})
         end
         local BoxSection = VisualsTab:Section({Name = "Boxes",Side = "Left"}) do
             BoxSection:Toggle({Name = "Box Enabled",Flag = "ESP/Player/Box/Enabled",Value = false})
-            BoxSection:Toggle({Name = "Healthbar",Flag = "ESP/Player/Box/Healthbar",Value = false})
             BoxSection:Toggle({Name = "Filled",Flag = "ESP/Player/Box/Filled",Value = false})
             BoxSection:Toggle({Name = "Outline",Flag = "ESP/Player/Box/Outline",Value = true})
             BoxSection:Slider({Name = "Thickness",Flag = "ESP/Player/Box/Thickness",Min = 1,Max = 10,Value = 1})
@@ -158,10 +151,10 @@ local Window = Parvus.Utilities.UI:Window({
             BoxSection:Toggle({Name = "Outline",Flag = "ESP/Player/Text/Outline",Value = true})
             BoxSection:Toggle({Name = "Autoscale",Flag = "ESP/Player/Text/Autoscale",Value = true})
             BoxSection:Dropdown({Name = "Font",Flag = "ESP/Player/Text/Font",List = {
-                {Name = "UI",Mode = "Button",Value = true},
+                {Name = "UI",Mode = "Button"},
                 {Name = "System",Mode = "Button"},
                 {Name = "Plex",Mode = "Button"},
-                {Name = "Monospace",Mode = "Button"}
+                {Name = "Monospace",Mode = "Button",Value = true}
             }})
             BoxSection:Slider({Name = "Size",Flag = "ESP/Player/Text/Size",Min = 13,Max = 100,Value = 16})
             BoxSection:Slider({Name = "Transparency",Flag = "ESP/Player/Text/Transparency",Min = 0,Max = 1,Precise = 2,Value = 0})
@@ -169,7 +162,6 @@ local Window = Parvus.Utilities.UI:Window({
         local OoVSection = VisualsTab:Section({Name = "Offscreen Arrows",Side = "Left"}) do
             OoVSection:Toggle({Name = "Enabled",Flag = "ESP/Player/Arrow/Enabled",Value = false})
             OoVSection:Toggle({Name = "Filled",Flag = "ESP/Player/Arrow/Filled",Value = true})
-            OoVSection:Toggle({Name = "Outline",Flag = "ESP/Player/Arrow/Outline",Value = true})
             OoVSection:Slider({Name = "Width",Flag = "ESP/Player/Arrow/Width",Min = 14,Max = 28,Value = 18})
             OoVSection:Slider({Name = "Height",Flag = "ESP/Player/Arrow/Height",Min = 14,Max = 28,Value = 28})
             OoVSection:Slider({Name = "Distance From Center",Flag = "ESP/Player/Arrow/Distance",Min = 80,Max = 200,Value = 200})
@@ -179,7 +171,6 @@ local Window = Parvus.Utilities.UI:Window({
         local HeadSection = VisualsTab:Section({Name = "Head Circles",Side = "Right"}) do
             HeadSection:Toggle({Name = "Enabled",Flag = "ESP/Player/Head/Enabled",Value = false})
             HeadSection:Toggle({Name = "Filled",Flag = "ESP/Player/Head/Filled",Value = true})
-            HeadSection:Toggle({Name = "Outline",Flag = "ESP/Player/Head/Outline",Value = true})
             HeadSection:Toggle({Name = "Autoscale",Flag = "ESP/Player/Head/Autoscale",Value = true})
             HeadSection:Slider({Name = "Radius",Flag = "ESP/Player/Head/Radius",Min = 1,Max = 10,Value = 8})
             HeadSection:Slider({Name = "NumSides",Flag = "ESP/Player/Head/NumSides",Min = 3,Max = 100,Value = 4})
@@ -342,45 +333,42 @@ Parvus.Utilities.Drawing:FOVCircle("Trigger",Window.Flags)
 Parvus.Utilities.Drawing:FOVCircle("SilentAim",Window.Flags)
 
 do local SetIdentity = syn and syn.set_thread_identity or setidentity
-local OldNamecall,OldTaskSpawn,OldRandom,DontBlock
---[[for Index,Connection in pairs(getconnections(workspace.Characters.ChildAdded)) do
+local OldNamecall,OldTaskSpawn,OldRandom,OldPluginManager,Message,DontBlock
+for Index,Connection in pairs(getconnections(workspace.Characters.ChildAdded)) do
     setupvalue(Connection.Function,4,function() local String = ""
         for Index = 1, 10 do
             String = String .. string.char(math.random(97, 121))
         end return String
     end)
-end]]
+end
 
-OldNamecall = hookmetamethod(game, "__namecall", function(Self,...)
-    if checkcaller() then return OldNamecall(Self,...) end
+OldNamecall = hookmetamethod(game, "__namecall", function(Self, ...)
+    if checkcaller() then return OldNamecall(Self, ...) end
     local Method,Args = getnamecallmethod(),{...}
 
     if Method == "FireServer" then
-        --[[if type(Args[2]) == "string" and Args[2] ~= "Look" then
-            print(Args[2])
-        end]]
         if type(Args[1]) == "string" and table.find(BanCommands,Args[1]) then
             for Index, Reason in pairs(BanReasons) do
                 if type(Args[2]) == "string" and string.match(Args[2],Reason) then
-                    print("blocked",Args[2])
+                    --print("blocked",Args[2])
                     return
                 end
             end
         end
     end
-    --[[if Method == "Destroy" then
-        if Self.Parent == LocalPlayer.Character then
+    if Method == "Destroy" then
+        --[[if Self.Parent == LocalPlayer.Character then
             print(Self)
-        end
+        end]]
         if Self.Parent == LocalPlayer.Character
         and Self.Name ~= DontBlock then
-            print("blocked",Self)
+            --print("blocked",Self)
             return
         end
-    end]]
-    return OldNamecall(Self,...)
+    end
+    return OldNamecall(Self, ...)
 end)
---[[OldRandom = hookfunction(getrenv().math.random, function(...)
+OldRandom = hookfunction(getrenv().math.random, function(...)
     if checkcaller() then return OldRandom(...) end local Args = {...}
     if Args[1] == 1000 then return 1000 end
     if Args[1] == 97 and Args[2] == 122 then 
@@ -389,10 +377,10 @@ end)
         return Random
     end
     if Args[1] == 1 and Args[2] == 1000 then
-        print("random blocked")
+        --print("random blocked")
         return math.huge
     end return OldRandom(...)
-end)]]
+end)
 OldTaskSpawn = hookfunction(getrenv().task.spawn, function(...)
     if checkcaller() then return OldTaskSpawn(...) end local Args = {...}
     if type(Args[1]) == "function" then
@@ -400,11 +388,59 @@ OldTaskSpawn = hookfunction(getrenv().task.spawn, function(...)
         if table.find(Constants,"task")
         and table.find(Constants,"wait") then
             --print("blocked",repr(Constants))
-            wait(31536000) -- 365 days
+            wait(9e9) -- big brain lmao
         end
     end
     return OldTaskSpawn(...)
+end) -- Thanks to Kiriot22
+task.spawn(function() SetIdentity(2)
+    local Success,Error = pcall(getrenv().PluginManager)
+    Message = Error
+end)
+OldPluginManager = hookfunction(getrenv().PluginManager, function()
+    return error(Message)
 end) end
+
+--This thing laggy as hell, dont use in your scripts
+--[[local DefaultRecoil = {}
+for Index,Config in pairs(getgc(true)) do
+    if type(Config) == "table"
+    and rawget(Config,"Recoil")
+    and type(Config.Recoil) == "table"
+    and Config.Recoil.Default then
+        DefaultRecoil[Config.Model] = {
+            WeaponScale = Config.Recoil.Default.WeaponScale,
+            CameraScale = Config.Recoil.Default.CameraScale,
+            RecoilScale = Config.Recoil.Default.RecoilScale
+        }
+    end
+end
+local function UpdateRecoil()
+    for Index,Config in pairs(getgc(true)) do
+        if type(Config) == "table"
+        and rawget(Config,"Controller")
+        and rawget(Config,"Model") then
+            if Config.Recoil and Config.Recoil.Default and
+                DefaultRecoil[Config.Model] then
+
+                local Modified = Parvus.Config.GameFeatures.WeaponModification
+                local Default = DefaultRecoil[Config.Model]
+
+                Config.Recoil.Default.WeaponScale = Modified.Enabled
+                and Default.WeaponScale * Modified.WeaponScale
+                or Default.WeaponScale
+
+                Config.Recoil.Default.CameraScale = Modified.Enabled
+                and Default.CameraScale * Modified.CameraScale
+                or Default.CameraScale
+
+                Config.Recoil.Default.RecoilScale = Modified.Enabled
+                and Default.RecoilScale * Modified.RecoilScale
+                or Default.RecoilScale
+            end
+        end
+    end
+end]]
 
 local Events = getupvalue(Tortoiseshell.Network.BindEvent,1)
 local WeaponConfigs = getupvalue(Tortoiseshell.Items.GetConfig,3)
@@ -433,18 +469,14 @@ end
 local function GetPlayerTeam(Player)
     for Index,Team in pairs(TeamService:GetChildren()) do
         if Team.Players:FindFirstChild(Player.Name) then
-            return Team.Name
+            return Team
         end
     end
 end
 local function TeamCheck(Player)
     local Team = GetPlayerTeam(Player)
     local LPTeam = GetPlayerTeam(LocalPlayer)
-    return LPTeam ~= Team or Team == "FFA"
-end
-local function DistanceCheck(Enabled,Distance,MaxDistance)
-    if not Enabled then return true end
-    return Distance * 0.28 <= MaxDistance
+    return LPTeam ~= Team or tostring(Team) == "FFA"
 end
 local function WallCheck(Enabled,Hitbox)
     if not Enabled then return true end
@@ -474,15 +506,6 @@ local function GetCharacterInfo(Player,Shield)
         return Character:FindFirstChild("Hitbox"),true
     end
 end
-local function GetHitboxPart(Hitbox,Name)
-    for Index,Part in pairs(Hitbox:GetChildren()) do
-        local WeldConstraint = Part:FindFirstChildOfClass("WeldConstraint")
-        if not WeldConstraint then continue end
-        if tostring(WeldConstraint.Part0) == Name then
-            return Part
-        end
-    end
-end
 local function GetEquippedController()
     local Controllers = Tortoiseshell.Items:GetControllers()
     for Weapon,Controller in pairs(Controllers) do
@@ -499,6 +522,14 @@ local function GetEquippedWeapon()
         end
     end
 end
+--[[local function GetCurrentConfig()
+    local Weapon,Config = GetEquippedWeapon()
+    if Weapon and Config then
+        local Controller = require(ControllersFolder[Config.Controller])
+        local Proto = debug.getproto(Controller.Create,1,true)
+        return getupvalue(Proto[1],1), getupvalue(Proto[2],1)
+    end
+end]]
 
 local function ToggleShoot(Toggle)
     if Toggle then
@@ -599,7 +630,6 @@ local function ComputeProjectiles(Config,Hitbox)
         })
     end
 
-    if not RayResult then return end
     return Camera.CFrame.Position,Projectiles,
     RayResult.Position,RayResult.Normal
 end
@@ -610,20 +640,20 @@ local function AutoShoot(Hitbox,Enabled)
     if Weapon and Config then
         --[[if Config.Controller == "Melee" then
             local Camera = Workspace.CurrentCamera
-            if (Hitbox[3].Position - Camera.CFrame.Position).Magnitude < 22.5 then
-                local Health = Hitbox[3].Parent.Parent.Health.Value
+            if (Hitbox[2].Position - Camera.CFrame.Position).Magnitude < 22.5 then
+                local Health = Hitbox[2].Parent.Parent.Health.Value
                 
-                local Backstab = Hitbox[3].CFrame * CFrame.new(0,0,-Config.Melee.Range)
+                local Backstab = Hitbox[2].CFrame * CFrame.new(0,0,-Config.Melee.Range)
                 local RayResult =  Raycast(Backstab.Position,
-                Hitbox[3].Position - Backstab.Position,{Hitbox[3]})
+                Hitbox[2].Position - Backstab.Position,{Hitbox[2]})
 
                 Tortoiseshell.Network:Fire("Item_Melee","StabBegin",Weapon)
                 task.wait(Config.Melee.Delay + Config.Melee.Time)
-                Tortoiseshell.Network:Fire("Item_Melee","Stab",Weapon,Hitbox[3],
+                Tortoiseshell.Network:Fire("Item_Melee","Stab",Weapon,Hitbox[2],
                 RayResult.Position,Backstab.LookVector * (Config.Melee.Range + 1))
 
-                if Health ~= Hitbox[3].Parent.Parent.Health.Value then
-                    Tortoiseshell.UI.Events.Hitmarker:Fire(Hitbox[3],RayResult.Position)
+                if Health ~= Hitbox[2].Parent.Parent.Health.Value then
+                    Tortoiseshell.UI.Events.Hitmarker:Fire(Hitbox[2],RayResult.Position)
                 end
             end return
         end]]
@@ -638,8 +668,8 @@ local function AutoShoot(Hitbox,Enabled)
             local FireModeFromList = Config.FireModeList[FireMode.Value]
             local CurrentFireMode = Config.FireModes[FireModeFromList]
             local CameraPosition,ShootProjectiles,RayPosition,
-            RayNormal = ComputeProjectiles(Config,Hitbox[3])
-            if not CameraPosition then return end
+            RayNormal = ComputeProjectiles(Config,Hitbox[2])
+            
             Tortoiseshell.Network:Fire("Item_Paintball","Shoot",
             Weapon,CameraPosition,ShootProjectiles)
 
@@ -648,11 +678,11 @@ local function AutoShoot(Hitbox,Enabled)
 
             for Index,Projectile in pairs(ShootProjectiles) do
                 Tortoiseshell.Network:Fire("Projectiles","__Hit",
-                Projectile[2],RayPosition,Hitbox[3],RayNormal,Hitbox[1])
+                Projectile[2],RayPosition,Hitbox[2],RayNormal,Hitbox[1])
             end
             
             Tortoiseshell.Network:Fire("Item_Paintball","Reload",Weapon)
-            Tortoiseshell.UI.Events.Hitmarker:Fire(Hitbox[3],RayPosition,
+            Tortoiseshell.UI.Events.Hitmarker:Fire(Hitbox[2],RayPosition,
             Config.Projectile.Amount and Config.Projectile.Amount > 3)
             task.wait(60/CurrentFireMode.FireRate)
             if (OldAmmo - Ammo.Value) >= 1 then
@@ -682,21 +712,20 @@ local function GetHitbox(Config)
     local Camera = Workspace.CurrentCamera
     
     local FieldOfView,ClosestHitbox = Config.DynamicFOV and
-    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView or Config.FieldOfView
+    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView
+    or Config.FieldOfView,nil
 
-    for Index,Player in pairs(PlayerService:GetPlayers()) do
+    for Index, Player in pairs(PlayerService:GetPlayers()) do
         local Character,Shield = GetCharacterInfo(Player,Config.Shield)
-        if Player ~= LocalPlayer and Character and Shield and TeamCheck(Player) then
-            for Index,BodyPart in pairs(Config.BodyParts) do
-                local Hitbox = GetHitboxPart(Character,BodyPart) if not Hitbox then continue end
+        if Player ~= LocalPlayer and Shield and TeamCheck(Player) then
+            for Index, HumanoidPart in pairs(Config.Priority) do
+                local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
                 local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-
-                if WallCheck(Config.WallCheck,Hitbox)
-                and DistanceCheck(Config.DistanceCheck,Distance,Config.Distance) then
-                    local ScreenPosition,OnScreen = Camera:WorldToViewportPoint(Hitbox.Position)
+                if Hitbox and Distance <= Config.Distance then
+                    local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Hitbox.Position)
                     local Magnitude = (Vector2.new(ScreenPosition.X, ScreenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
-                    if OnScreen and Magnitude < FieldOfView then
-                        FieldOfView,ClosestHitbox = Magnitude,{Player,Character,Hitbox,Distance,ScreenPosition}
+                    if OnScreen and Magnitude < FieldOfView and WallCheck(Config.WallCheck,Hitbox) then
+                        FieldOfView,ClosestHitbox = Magnitude,{Player,Hitbox}
                     end
                 end
             end
@@ -710,25 +739,26 @@ local function GetHitboxWithPrediction(Config)
     local Camera = Workspace.CurrentCamera
 
     local FieldOfView,ClosestHitbox = Config.DynamicFOV and
-    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView or Config.FieldOfView
+    ((120 - Camera.FieldOfView) * 4) + Config.FieldOfView
+    or Config.FieldOfView,nil
 
-    for Index,Player in pairs(PlayerService:GetPlayers()) do
+    for Index, Player in pairs(PlayerService:GetPlayers()) do
         local Character,Shield = GetCharacterInfo(Player,false)
-        if Player ~= LocalPlayer and Character and Shield and TeamCheck(Player) then
-            for Index,BodyPart in pairs(Config.BodyParts) do
-                local Hitbox = GetHitboxPart(Character,BodyPart) if not Hitbox then continue end
+        if Player ~= LocalPlayer and Shield and TeamCheck(Player) then
+            for Index, HumanoidPart in pairs(Config.Priority) do
+                local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
                 local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
+                if Hitbox and Distance <= Config.Distance then
+                    local HitboxDistance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
+                    local HitboxGravityCorrection = Vector3.new(0,HitboxDistance / PredictedGravity,0) / GravityCorrection
+                    local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * HitboxDistance) / PredictedVelocity
 
-                if WallCheck(Config.WallCheck,Hitbox)
-                and DistanceCheck(Config.DistanceCheck,Distance,Config.Distance) then
-                    local PredictionGravity = Vector3.new(0,(Distance + GravityCorrection / 1000) / PredictedGravity,0)
-                    local PredictionVelocity = (Hitbox.AssemblyLinearVelocity * Distance) / PredictedVelocity
-                    local ScreenPosition,OnScreen = Camera:WorldToViewportPoint(Config.Prediction
-                    and Hitbox.Position + PredictionGravity + PredictionVelocity or Hitbox.Position)
+                    local ScreenPosition, OnScreen = Camera:WorldToViewportPoint(Config.Prediction
+                    and Hitbox.Position + HitboxGravityCorrection + HitboxVelocityCorrection or Hitbox.Position)
 
                     local Magnitude = (Vector2.new(ScreenPosition.X, ScreenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
-                    if OnScreen and Magnitude < FieldOfView then
-                        FieldOfView,ClosestHitbox = Magnitude,{Player,Character,Hitbox,Distance,ScreenPosition}
+                    if OnScreen and Magnitude < FieldOfView and WallCheck(Config.WallCheck,Hitbox) then
+                        FieldOfView,ClosestHitbox = Magnitude,Hitbox
                     end
                 end
             end
@@ -739,20 +769,18 @@ local function GetHitboxWithPrediction(Config)
 end
 local function GetHitboxAllFOV(Config)
     local Camera = Workspace.CurrentCamera
-    local InTheRange,ClosestHitbox = math.huge,nil
+    local Distance,ClosestHitbox = math.huge,nil
 
-    for Index,Player in pairs(PlayerService:GetPlayers()) do
+    for Index, Player in pairs(PlayerService:GetPlayers()) do
         local Character,Shield = GetCharacterInfo(Player,true)
-        if Player ~= LocalPlayer and Character and Shield and TeamCheck(Player) then
-            for Index,BodyPart in pairs(Config.BodyParts) do
-                local Hitbox = GetHitboxPart(Character,BodyPart) if not Hitbox then continue end
+        if Player ~= LocalPlayer and Shield and TeamCheck(Player) then
+            for Index, HumanoidPart in pairs(Config.Priority) do
+                local Hitbox = Character and Character:FindFirstChild(HumanoidPart)
                 local Distance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-
-                if WallCheck(Config.WallCheck,Hitbox)
-                and DistanceCheck(Config.DistanceCheck,Distance,Config.Distance) then
+                if Hitbox and Distance <= Config.Distance then
                     local Magnitude = (Hitbox.Position - Camera.CFrame.Position).Magnitude
-                    if Magnitude < InTheRange then
-                        InTheRange,ClosestHitbox = Magnitude,{Player,Character,Hitbox,Distance}
+                    if Magnitude < Distance and WallCheck(Config.WallCheck,Hitbox) then
+                        Distance,ClosestHitbox = Magnitude,{Player,Hitbox}
                     end
                 end
             end
@@ -763,15 +791,16 @@ local function GetHitboxAllFOV(Config)
 end
 
 local function AimAt(Hitbox,Config)
-    if not Hitbox then return end
+    if not Hitbox then return end Hitbox = Hitbox[2]
     local Camera = Workspace.CurrentCamera
     local Mouse = UserInputService:GetMouseLocation()
 
-    local PredictionGravity = Vector3.new(0,(Hitbox[4] + GravityCorrection / 1000) / PredictedGravity,0)
-    local PredictionVelocity = (Hitbox[3].AssemblyLinearVelocity * Hitbox[4]) / PredictedVelocity
-    local HitboxOnScreen = Camera:WorldToViewportPoint(Config.Prediction
-    and Hitbox[3].Position + PredictionGravity + PredictionVelocity or Hitbox[3].Position)
+    local HitboxDistance = (Hitbox.Position - Camera.CFrame.Position).Magnitude
+    local HitboxGravityCorrection = Vector3.new(0,(HitboxDistance + (GravityCorrection / 1000)) / PredictedGravity,0)
+    local HitboxVelocityCorrection = (Hitbox.AssemblyLinearVelocity * HitboxDistance) / PredictedVelocity
 
+    local HitboxOnScreen = Camera:WorldToViewportPoint(Config.Prediction
+    and Hitbox.Position + HitboxGravityCorrection + HitboxVelocityCorrection or Hitbox.Position)
     mousemoverel(
         (HitboxOnScreen.X - Mouse.X) * Config.Sensitivity,
         (HitboxOnScreen.Y - Mouse.Y) * Config.Sensitivity
@@ -784,11 +813,11 @@ Tortoiseshell.Network.Fire = function(Self,...) local Args = {...}
     if SilentAim and not Window.Flags["BadBusiness/AutoShoot"] then
         if Args[2] == "__Hit" and math.random(0,100)
         <= Window.Flags["SilentAim/HitChance"] then
-            Args[4] = SilentAim[3].Position
-            Args[5] = SilentAim[3]
-            Args[7] = SilentAim[2]
+            Args[4] = SilentAim[2].Position
+            Args[5] = SilentAim[2]
+            Args[7] = SilentAim[1]
             Tortoiseshell.UI.Events.Hitmarker:Fire(
-            SilentAim[3],SilentAim[3].Position)
+            SilentAim[2],SilentAim[2].Position)
         end
     end
     if Window.Flags["BadBusiness/AntiAim/Enabled"] and Args[3] == "Look" then
@@ -857,22 +886,20 @@ RunService.Heartbeat:Connect(function()
     SilentAim = GetHitbox({
         Enabled = Window.Flags["SilentAim/Enabled"],
         WallCheck = Window.Flags["SilentAim/WallCheck"],
-        DistanceCheck = Window.Flags["SilentAim/DistanceCheck"],
         DynamicFOV = Window.Flags["SilentAim/DynamicFOV"],
         FieldOfView = Window.Flags["SilentAim/FieldOfView"],
         Distance = Window.Flags["SilentAim/Distance"],
-        BodyParts = Window.Flags["SilentAim/BodyParts"],
+        Priority = Window.Flags["SilentAim/Priority"],
         Shield = true
     })
     if Aimbot then AimAt(
         GetHitbox({
             Enabled = Window.Flags["Aimbot/Enabled"],
             WallCheck = Window.Flags["Aimbot/WallCheck"],
-            DistanceCheck = Window.Flags["Aimbot/DistanceCheck"],
             DynamicFOV = Window.Flags["Aimbot/DynamicFOV"],
             FieldOfView = Window.Flags["Aimbot/FieldOfView"],
             Distance = Window.Flags["Aimbot/Distance"],
-            BodyParts = Window.Flags["Aimbot/BodyParts"]
+            Priority = Window.Flags["Aimbot/Priority"]
         }),{
             Prediction = Window.Flags["Aimbot/Prediction"],
             Sensitivity = Window.Flags["Aimbot/Smoothness"] / 100
@@ -903,43 +930,81 @@ Parvus.Utilities.Misc:NewThreadLoop(0,function()
     AutoShoot(Window.Flags["BadBusiness/AutoShoot/AllFOV"]
     and GetHitboxAllFOV({
         WallCheck = Window.Flags["SilentAim/WallCheck"],
-        DistanceCheck = Window.Flags["SilentAim/DistanceCheck"],
         Distance = Window.Flags["SilentAim/Distance"],
-        BodyParts = Window.Flags["SilentAim/BodyParts"]
+        Priority = Window.Flags["SilentAim/Priority"]
     }) or SilentAim,Window.Flags["BadBusiness/AutoShoot"])
 end)
 Parvus.Utilities.Misc:NewThreadLoop(0,function()
     if not Trigger then return end
-    local TriggerHitbox = GetHitboxWithPrediction({
+    local TriggerHB = GetHitboxWithPrediction({
         Enabled = Window.Flags["Trigger/Enabled"],
-        Prediction = Window.Flags["Trigger/Prediction"],
         WallCheck = Window.Flags["Trigger/WallCheck"],
-        DistanceCheck = Window.Flags["Trigger/DistanceCheck"],
+        Prediction = Window.Flags["Trigger/Prediction"],
         DynamicFOV = Window.Flags["Trigger/DynamicFOV"],
         FieldOfView = Window.Flags["Trigger/FieldOfView"],
         Distance = Window.Flags["Trigger/Distance"],
-        BodyParts = Window.Flags["Trigger/BodyParts"]
+        Priority = Window.Flags["Trigger/Priority"]
     })
 
-    if TriggerHitbox then ToggleShoot(true)
+    if TriggerHB then ToggleShoot(true)
         task.wait(Window.Flags["Trigger/Delay"])
         if Window.Flags["Trigger/HoldMode"] then
             while task.wait() do
-                TriggerHitbox = GetHitboxWithPrediction({
+                TriggerHB = GetHitboxWithPrediction({
                     Enabled = Window.Flags["Trigger/Enabled"],
-                    Prediction = Window.Flags["Trigger/Prediction"],
                     WallCheck = Window.Flags["Trigger/WallCheck"],
-                    DistanceCheck = Window.Flags["Trigger/DistanceCheck"],
+                    Prediction = Window.Flags["Trigger/Prediction"],
                     DynamicFOV = Window.Flags["Trigger/DynamicFOV"],
                     FieldOfView = Window.Flags["Trigger/FieldOfView"],
                     Distance = Window.Flags["Trigger/Distance"],
-                    BodyParts = Window.Flags["Trigger/BodyParts"]
-                }) if not TriggerHitbox or not Trigger then break end
+                    Priority = Window.Flags["Trigger/Priority"]
+                }) if not TriggerHB or not Trigger then break end
             end
         end ToggleShoot(false)
     end
 end)
 
+--[[local function ShallowCopy(Table)
+    local TableCopy
+    if type(Table) == "table" then
+        TableCopy = {}
+        for Index,Value in pairs(Table) do
+            if typeof(Value) == "table" then
+                TableCopy[Index] = ShallowCopy(Value)
+            else
+                TableCopy[Index] = Value
+            end
+        end
+    else
+        TableCopy = Table
+    end
+    return TableCopy
+end
+local OldConfigs = {}
+Parvus.Utilities.Misc:NewThreadLoop(0,function()
+    if Window.Flags["BadBusiness/WeaponMod/Enabled"] then
+        local First,Second = GetCurrentConfig()
+        if not First and not Second then return end
+        local Configs = {First = First, Second = Second}
+
+        OldConfigs.First = ShallowCopy(First)
+        OldConfigs.Second = ShallowCopy(Second)
+
+        for Index,Config in pairs(Configs) do
+            if Config.Recoil and Config.Recoil.Default then
+                local OldConfig = OldConfigs[Index]
+                Config.Recoil.Default.WeaponScale = 
+                OldConfig.Recoil.Default.WeaponScale * (Window.Flags["BadBusiness/WeaponMod/WeaponScale"] / 100)
+
+                Config.Recoil.Default.CameraScale = 
+                OldConfig.Recoil.Default.CameraScale * (Window.Flags["BadBusiness/WeaponMod/CameraScale"] / 100)
+
+                Config.Recoil.Default.RecoilScale = 
+                OldConfig.Recoil.Default.RecoilScale * (Window.Flags["BadBusiness/WeaponMod/RecoilScale"] / 100)
+            end
+        end
+    end
+end)]]
 Parvus.Utilities.Misc:NewThreadLoop(1,function()
     local Weapon,Config = GetEquippedWeapon()
     if Weapon and Config then
